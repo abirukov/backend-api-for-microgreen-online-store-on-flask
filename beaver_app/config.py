@@ -11,7 +11,6 @@ if os.path.exists(os.path.join(os.path.dirname(__file__), '../.env')):
 def get_config() -> Mapping[str, Any]:
     return {
         "SECRET_KEY": os.environ.get("SECRET_KEY", "secret_key"),
-        
         "POSTGRES_DBNAME": os.environ.get("POSTGRES_DBNAME"),
         "POSTGRES_HOST": os.environ.get("POSTGRES_HOST", "127.0.0.1"),
         "POSTGRES_PORT": int(os.environ.get("POSTGRES_PORT", 5432)),
