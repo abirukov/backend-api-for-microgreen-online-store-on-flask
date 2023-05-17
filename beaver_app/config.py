@@ -19,12 +19,6 @@ def get_config() -> Mapping[str, Any]:
         "SQLALCHEMY_TRACK_MODIFICATIONS": os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False),
         "TELEGRAM_BOT_TOKEN": os.environ.get("TELEGRAM_BOT_TOKEN"),
         "REMEMBER_COOKIE_DURATION": timedelta(days=5),
-        "API_TITLE": "Green Beaver API",
-        "API_VERSION": "v1",
-        "OPENAPI_VERSION": "3.0.2",
-        "OPENAPI_URL_PREFIX": "/docs/api",
-        "OPENAPI_SWAGGER_UI_PATH": "/swagger",
-        "OPENAPI_SWAGGER_UI_URL": "https://cdn.jsdelivr.net/npm/swagger-ui-dist/",
     }
 
 
