@@ -17,5 +17,5 @@ class Product(TimestampMixin, Base):
     title: Mapped[str] = mapped_column(String())
     price: Mapped[float] = mapped_column(Float())
     description: Mapped[str] = mapped_column(Text())
-    category_id: Mapped[str] = mapped_column(UUID(as_uuid=True), ForeignKey("categories.id"), primary_key=True)
+    category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("categories.id"), primary_key=True)
     category: Mapped["Category"] = relationship(back_populates="product")

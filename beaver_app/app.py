@@ -15,12 +15,12 @@ def create_app() -> Flask:
         'handlers': {'wsgi': {
             'class': 'logging.StreamHandler',
             'stream': 'ext://flask.logging.wsgi_errors_stream',
-            'formatter': 'default'
+            'formatter': 'default',
         }},
         'root': {
             'level': 'INFO',
-            'handlers': ['wsgi']
-        }
+            'handlers': ['wsgi'],
+        },
     })
     app = Flask(__name__)
     app.config.update(get_config())

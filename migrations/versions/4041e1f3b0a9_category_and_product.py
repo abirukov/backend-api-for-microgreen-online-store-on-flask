@@ -1,8 +1,8 @@
 """Category and product
 
-Revision ID: 9e1ec0ba8e1c
+Revision ID: 4041e1f3b0a9
 Revises: 
-Create Date: 2023-05-17 09:59:14.516086
+Create Date: 2023-05-18 08:15:04.132551
 
 """
 from alembic import op
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 # revision identifiers, used by Alembic.
-revision = '9e1ec0ba8e1c'
+revision = '4041e1f3b0a9'
 down_revision = None
 branch_labels = None
 depends_on = None
