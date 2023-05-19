@@ -17,8 +17,6 @@ def get_config() -> Mapping[str, Any]:
         "POSTGRES_USER": os.environ.get("POSTGRES_USER", "postgres"),
         "POSTGRES_PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
         "SQLALCHEMY_TRACK_MODIFICATIONS": os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False),
-        "TELEGRAM_BOT_TOKEN": os.environ.get("TELEGRAM_BOT_TOKEN"),
-        "REMEMBER_COOKIE_DURATION": timedelta(days=5),
     }
 
 
