@@ -1,5 +1,4 @@
 import os
-from datetime import timedelta
 from typing import Any, Mapping
 
 from dotenv import load_dotenv
@@ -17,6 +16,9 @@ def get_config() -> Mapping[str, Any]:
         "POSTGRES_USER": os.environ.get("POSTGRES_USER", "postgres"),
         "POSTGRES_PASSWORD": os.environ.get("POSTGRES_PASSWORD", ""),
         "SQLALCHEMY_TRACK_MODIFICATIONS": os.environ.get("SQLALCHEMY_TRACK_MODIFICATIONS", False),
+        "API_TITLE": "Green Beaver API",
+        "API_VERSION": "v1",
+        "OPENAPI_VERSION": "3.0.2",
     }
 
 
