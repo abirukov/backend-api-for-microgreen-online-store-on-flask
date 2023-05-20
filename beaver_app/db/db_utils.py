@@ -1,26 +1,22 @@
-from flask import current_app
-from sqlalchemy import select
-
 from beaver_app.blueprints.product.models.product import Product
 from beaver_app.blueprints.category.models.category import Category
+from beaver_app.db.db import db_session
 from beaver_app.enums import Entities
-
-session = current_app.session
 
 
 def save(db_model: Product | Category) -> Product | Category:
-    session.add(db_model)
-    session.commit()
+    db_session.add(db_model)
+    db_session.commit()
     return db_model
 
 
 def update_fields_by_id(type: Entities, id: int, new_fields: dict) -> None:
-    session.query(type.value).filter(
+    db_session.query(type.value).filter(
         type.value.id == id,
     ).update(
         new_fields, synchronize_session=False,
     )
-    session.commit()
+    db_session.commit()
 
 
 def get_by_id(type: Entities, id: int) -> Product | Category | None:
@@ -28,7 +24,8 @@ def get_by_id(type: Entities, id: int) -> Product | Category | None:
 
 
 def get_list(type: Entities) -> list[Product | Category | None]:
-    return current_app.session.execute(select(type).fetchall())
+    print(type.value)
+    return type.value.query.all()
 
 
 def safe_delete(type: Entities, id: int) -> None:
@@ -37,17 +34,17 @@ def safe_delete(type: Entities, id: int) -> None:
 
 def update(model_obj):
     assert model_obj.id
-    session.add(model_obj)
-    session.commit()
+    db_session.add(model_obj)
+    db_session.commit()
     return model_obj
 
 
 def create(model_obj):
-    session.add(model_obj)
-    session.commit()
+    db_session.add(model_obj)
+    db_session.commit()
     return model_obj
 
 
 def delete(model_obj) -> None:
-    session.delete(model_obj)
-    session.commit()
+    db_session.delete(model_obj)
+    db_session.commit()

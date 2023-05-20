@@ -4,7 +4,7 @@ from typing import TYPE_CHECKING
 from sqlalchemy import String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
-from beaver_app.db.base import Base
+from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 
 if TYPE_CHECKING:
@@ -18,4 +18,4 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     price: Mapped[float] = mapped_column(Float())
     description: Mapped[str] = mapped_column(Text())
     category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("categories.id"), primary_key=True)
-    category: Mapped["Category"] = relationship(back_populates="product")
+    category: Mapped["Category"] = relationship(back_populates="products")
