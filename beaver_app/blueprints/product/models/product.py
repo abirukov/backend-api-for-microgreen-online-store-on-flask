@@ -5,13 +5,13 @@ from sqlalchemy import String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from beaver_app.db.base import Base
-from beaver_app.db.mixin import TimestampMixin
+from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 
 if TYPE_CHECKING:
     from beaver_app.blueprints.category.models.category import Category
 
 
-class Product(TimestampMixin, Base):
+class Product(Base, TimestampMixin, IsDeletedMixin):
     __tablename__ = "products"
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String())
