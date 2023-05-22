@@ -24,7 +24,6 @@ def get_by_id(type: Entities, id: int) -> Product | Category | None:
 
 
 def get_list(type: Entities) -> list[Product | Category | None]:
-    print(type.value)
     return type.value.query.all()
 
 

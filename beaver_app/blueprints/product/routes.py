@@ -1,7 +1,7 @@
 from flask import abort
 from flask.views import MethodView
 
-from beaver_app.blueprints.schemas import ProductSchema
+from beaver_app.blueprints.product.schemas import ProductSchema
 from beaver_app.blueprints.product.models.product import Product
 from beaver_app.db.db_utils import save, update, get_by_id, safe_delete, get_list
 from beaver_app.enums import Entities
@@ -22,10 +22,10 @@ class ProductsView(MethodView):
     def post(self, product_data):
         product = save(
             Product(
-                title=product_data["title"],
-                price=product_data["price"],
-                description=product_data["description"],
-                category_id=product_data["category_id"],
+                title=product_data.title,
+                price=product_data.price,
+                description=product_data.description,
+                category_id=product_data.category_id,
             ),
         )
         return product
@@ -46,10 +46,10 @@ class ProductView(MethodView):
         product = get_by_id(Entities.PRODUCT, product_id)
         if product is None:
             abort(404)
-        product.title = product_data["title"]
-        product.price = product_data["price"]
-        product.description = product_data["description"]
-        product.category_id = product_data["category_id"]
+        product.title = product_data.title
+        product.price = product_data.price
+        product.description = product_data.description
+        product.category_id = product_data.category_id
         update(product)
         return product
 
