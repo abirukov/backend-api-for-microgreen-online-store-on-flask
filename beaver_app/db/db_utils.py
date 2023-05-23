@@ -1,10 +1,8 @@
-from beaver_app.blueprints.product.models.product import Product
-from beaver_app.blueprints.category.models.category import Category
-from beaver_app.db.db import db_session
+from beaver_app.db.db import db_session, Base
 from beaver_app.enums import Entities
 
 
-def save(db_model: Product | Category) -> Product | Category:
+def save(db_model: Base) -> Base:
     db_session.add(db_model)
     db_session.commit()
     return db_model
@@ -19,11 +17,11 @@ def update_fields_by_id(type: Entities, id: int, new_fields: dict) -> None:
     db_session.commit()
 
 
-def get_by_id(type: Entities, id: int) -> Product | Category | None:
+def get_by_id(type: Entities, id: int) -> Base | None:
     return type.value.query.filter(type.value.id == id).first()
 
 
-def get_list(type: Entities) -> list[Product | Category | None]:
+def get_list(type: Entities) -> list[Base | None]:
     return type.value.query.all()
 
 

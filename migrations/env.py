@@ -6,7 +6,7 @@ from sqlalchemy import pool
 from alembic import context
 
 from beaver_app.config import get_connection_dsn, get_config
-from beaver_app.db.base import Base
+from beaver_app.db.db import Base
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.

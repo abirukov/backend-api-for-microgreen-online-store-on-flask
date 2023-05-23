@@ -20,7 +20,6 @@ class CategoriesView(MethodView):
     @category_blueprint.arguments(CategorySchema, location="json")
     @category_blueprint.response(201, CategorySchema)
     def post(self, category_data):
-        print(category_data.title)
         category = save(Category(title=category_data.title))
         return category
 
