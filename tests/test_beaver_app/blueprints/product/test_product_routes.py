@@ -1,7 +1,5 @@
 import json
 
-import pytest
-
 from beaver_app.db.db_utils import get_by_id, delete
 from beaver_app.enums import Entities
 
@@ -38,9 +36,9 @@ def test__products_view__create_fail_not_existing_field(client, saved_category):
         "title": "Товар тест",
         "price": "120.0",
         "description": "Товар тест описание",
-        "category_id": str(saved_category.id)
+        "category_id": str(saved_category.id),
     }
-    response = client.post(f"/products", json=product_data, follow_redirects=True)
+    response = client.post("/products", json=product_data, follow_redirects=True)
 
     assert response.status_code == 422
 
@@ -51,7 +49,7 @@ def test__products_view__create_fail_missing_field(client):
         "price": "120.0",
         "description": "Товар тест описание",
     }
-    response = client.post(f"/products", json=product_data, follow_redirects=True)
+    response = client.post("/products", json=product_data, follow_redirects=True)
 
     assert response.status_code == 422
 

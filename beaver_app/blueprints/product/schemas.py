@@ -1,6 +1,3 @@
-from marshmallow_sqlalchemy import fields
-
-from beaver_app.blueprints.category.schemas import CategorySchema
 from beaver_app.blueprints.product.models import Product
 from beaver_app.blueprints.schemas import BaseSchema
 
