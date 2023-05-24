@@ -11,4 +11,4 @@ if __name__ == '__main__':
             commands_module='beaver_app.commands',
         )
     else:
-        app.run(debug=True)
+        app.run(debug=True, host='0.0.0.0', port=5000)
