@@ -11,7 +11,7 @@ from beaver_app.blueprints.product.models.product import Product
 
 
 class Category(Base, TimestampMixin, IsDeletedMixin):
-    __tablename__ = "categories"
+    __tablename__ = 'categories'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String(255))
-    products: Mapped[List["Product"]] = relationship(back_populates="category")
+    products: Mapped[List['Product']] = relationship(back_populates='category')

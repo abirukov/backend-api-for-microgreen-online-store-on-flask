@@ -8,7 +8,7 @@ if __name__ == '__main__':
         run_command(
             app,
             args.command,
-            commands_module="beaver_app.commands",
+            commands_module='beaver_app.commands',
         )
     else:
         app.run(debug=True)

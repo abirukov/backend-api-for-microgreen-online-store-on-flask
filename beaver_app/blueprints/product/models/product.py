@@ -12,10 +12,10 @@ if TYPE_CHECKING:
 
 
 class Product(Base, TimestampMixin, IsDeletedMixin):
-    __tablename__ = "products"
+    __tablename__ = 'products'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     title: Mapped[str] = mapped_column(String())
     price: Mapped[float] = mapped_column(Float())
     description: Mapped[str] = mapped_column(Text())
-    category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey("categories.id"), primary_key=True)
-    category: Mapped["Category"] = relationship(back_populates="products")
+    category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('categories.id'), primary_key=True)
+    category: Mapped['Category'] = relationship(back_populates='products')

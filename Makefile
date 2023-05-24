@@ -9,7 +9,7 @@ style:
 	flake8 .
 types:
 	mypy .
-tests:
+test:
 	pytest --lf -vv
 check:
-	make style types tests
+	make style types test

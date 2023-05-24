@@ -5,10 +5,10 @@ from beaver_app.enums import Entities
 
 
 @pytest.mark.parametrize(
-    "entity_type, model",
+    'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("saved_category")),
-        (Entities.PRODUCT, pytest.lazy_fixture("saved_product")),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
     ],
 )
 def test__save(entity_type, model):
@@ -22,10 +22,10 @@ def test__save(entity_type, model):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model, new_data",
+    'entity_type, model, new_data',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("saved_category"), {"title": "updated_title"}),
-        (Entities.PRODUCT, pytest.lazy_fixture("saved_product"), {"title": "updated_title"}),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), {'title': 'updated_title'}),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), {'title': 'updated_title'}),
     ],
 )
 def test__update_fields_by_id(entity_type, model, new_data):
@@ -39,10 +39,10 @@ def test__update_fields_by_id(entity_type, model, new_data):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model",
+    'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("saved_category")),
-        (Entities.PRODUCT, pytest.lazy_fixture("saved_product")),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
     ],
 )
 def test__get_by_id(entity_type, model):
@@ -52,10 +52,10 @@ def test__get_by_id(entity_type, model):
 
 
 @pytest.mark.parametrize(
-    "entity_type, models_list",
+    'entity_type, models_list',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("category_list")),
-        (Entities.PRODUCT, pytest.lazy_fixture("product_list")),
+        (Entities.CATEGORY, pytest.lazy_fixture('category_list')),
+        (Entities.PRODUCT, pytest.lazy_fixture('product_list')),
     ],
 )
 def test__get_list(entity_type, models_list):
@@ -65,10 +65,10 @@ def test__get_list(entity_type, models_list):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model",
+    'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("saved_category")),
-        (Entities.PRODUCT, pytest.lazy_fixture("saved_product")),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
     ],
 )
 def test__safe_delete(entity_type, model):
@@ -80,10 +80,10 @@ def test__safe_delete(entity_type, model):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model, new_data",
+    'entity_type, model, new_data',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("saved_category"), {"title": "updated_title"}),
-        (Entities.PRODUCT, pytest.lazy_fixture("saved_product"), {"title": "updated_title"}),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), {'title': 'updated_title'}),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), {'title': 'updated_title'}),
     ],
 )
 def test__update(entity_type, model, new_data):
@@ -97,10 +97,10 @@ def test__update(entity_type, model, new_data):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model",
+    'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("category")),
-        (Entities.PRODUCT, pytest.lazy_fixture("product")),
+        (Entities.CATEGORY, pytest.lazy_fixture('category')),
+        (Entities.PRODUCT, pytest.lazy_fixture('product')),
     ],
 )
 def test__create(entity_type, model):
@@ -114,10 +114,10 @@ def test__create(entity_type, model):
 
 
 @pytest.mark.parametrize(
-    "entity_type, model",
+    'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture("category")),
-        (Entities.PRODUCT, pytest.lazy_fixture("product")),
+        (Entities.CATEGORY, pytest.lazy_fixture('category')),
+        (Entities.PRODUCT, pytest.lazy_fixture('product')),
     ],
 )
 def test__delete(entity_type, model) -> None:

@@ -8,16 +8,16 @@ from beaver_app.enums import Entities
 
 from flask_smorest import Blueprint
 
-product_blueprint = Blueprint("products", "product", url_prefix="/products")
+product_blueprint = Blueprint('products', 'product', url_prefix='/products')
 
 
-@product_blueprint.route("/", methods=["GET", "POST"])
+@product_blueprint.route('/', methods=['GET', 'POST'])
 class ProductsView(MethodView):
     @product_blueprint.response(200, ProductSchema(many=True))
     def get(self):
         return get_list(Entities.PRODUCT)
 
-    @product_blueprint.arguments(ProductSchema, location="json")
+    @product_blueprint.arguments(ProductSchema, location='json')
     @product_blueprint.response(201, ProductSchema)
     def post(self, product_data):
         product = save(
@@ -31,7 +31,7 @@ class ProductsView(MethodView):
         return product
 
 
-@product_blueprint.route("/<product_id>", methods=["GET", "PUT", "DELETE"])
+@product_blueprint.route('/<product_id>', methods=['GET', 'PUT', 'DELETE'])
 class ProductView(MethodView):
     @product_blueprint.response(200, ProductSchema)
     def get(self, product_id):
@@ -40,7 +40,7 @@ class ProductView(MethodView):
             abort(404)
         return product
 
-    @product_blueprint.arguments(ProductSchema, location="json")
+    @product_blueprint.arguments(ProductSchema, location='json')
     @product_blueprint.response(201, ProductSchema)
     def put(self, product_data, product_id):
         product = get_by_id(Entities.PRODUCT, product_id)
