@@ -13,7 +13,7 @@ from beaver_app.config import get_config
 def create_app() -> Flask:
 
     sentry_sdk.init(
-        dsn="https://46ba4ee456734c1e88da5ba1b320ad18@o1164730.ingest.sentry.io/4505240675942400",
+        dsn='https://46ba4ee456734c1e88da5ba1b320ad18@o1164730.ingest.sentry.io/4505240675942400',
         integrations=[
             FlaskIntegration(),
         ],
@@ -21,7 +21,7 @@ def create_app() -> Flask:
         # Set traces_sample_rate to 1.0 to capture 100%
         # of transactions for performance monitoring.
         # We recommend adjusting this value in production.
-        traces_sample_rate=1.0
+        traces_sample_rate=1.0,
     )
 
     dictConfig({
