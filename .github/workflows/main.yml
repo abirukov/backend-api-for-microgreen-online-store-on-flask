@@ -1,0 +1,60 @@
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run flake8
+        run: flake8 .
+  types:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run mypy
+        run: mypy .
+  test:
+    runs-on: ubuntu-latest
+    needs: [lint, types]
+    steps:
+      - uses: actions/checkout@v2
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.11
+      - name: Install requirements
+        run: pip install -r requirements.txt
+      - name: Run test
+        run: pytest --lf -vv
+
+    services:
+      postgres:
+        image: postgres:13.3
+        env:
+          POSTGRES_DB: "postgres"
+          POSTGRES_PASSWORD: "postgres"
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - "5432:5432"
