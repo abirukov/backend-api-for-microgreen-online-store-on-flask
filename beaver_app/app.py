@@ -1,8 +1,11 @@
 from flask import Flask
 from logging.config import dictConfig
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker, scoped_session
-from beaver_app.config import get_config, get_connection_dsn
+
+from flask_smorest import Api
+
+from beaver_app.blueprints.category.routes import category_blueprint
+from beaver_app.blueprints.product.routes import product_blueprint
+from beaver_app.config import get_config
 
 
 def create_app() -> Flask:
@@ -24,7 +27,7 @@ def create_app() -> Flask:
     })
     app = Flask(__name__)
     app.config.update(get_config())
-    engine = create_engine(get_connection_dsn(app.config), echo=True, query_cache_size=0)
-    scoped_session(sessionmaker(engine))
-
+    api = Api(app)
+    api.register_blueprint(product_blueprint)
+    api.register_blueprint(category_blueprint)
     return app
