@@ -8,7 +8,7 @@ from beaver_app.enums import Entities
 
 from flask_smorest import Blueprint
 
-product_blueprint = Blueprint('products', 'product', url_prefix='/products')
+product_blueprint = Blueprint('products', 'products', url_prefix='/products')
 
 
 @product_blueprint.route('/', methods=['GET', 'POST'])

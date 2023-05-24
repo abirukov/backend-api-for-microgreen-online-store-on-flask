@@ -23,6 +23,7 @@ def test__products_view__create_success(client, saved_category):
     }
     response = client.post('/products', json=product_data, follow_redirects=True)
     response_dict = response.json
+
     assert product_data['title'] == response_dict['title']
 
     product = get_by_id(Entities.PRODUCT, response_dict['id'])
