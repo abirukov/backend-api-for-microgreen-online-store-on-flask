@@ -49,7 +49,7 @@ jobs:
       postgres:
         image: postgres:13.3
         env:
-          POSTGRES_DB: "postgres"
+          POSTGRES_DB: "test"
           POSTGRES_PASSWORD: "postgres"
         options: >-
           --health-cmd pg_isready
