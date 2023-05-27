@@ -1,11 +1,5 @@
 name: CI
 
-env:
-  registry: tttt
-  DB_HOST: postgres
-  DB_USERNAME: postgres
-  DB_PASSWORD: postgres
-
 on:
   push:
     branches: [ master ]
@@ -51,6 +45,11 @@ jobs:
       - name: Run test
         run: pytest --lf -vv
 
+        env:
+          DB_HOST: postgres
+          DB_USERNAME: postgres
+          DB_PASSWORD: postgres
+
     services:
       postgres:
         image: postgres:13.3
@@ -65,3 +64,4 @@ jobs:
           --health-retries 5
         ports:
           - 5432:5432
+
