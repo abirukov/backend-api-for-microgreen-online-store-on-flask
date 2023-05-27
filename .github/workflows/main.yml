@@ -62,6 +62,6 @@ jobs:
         run: pytest --lf -vv
 
         env:
-#          DB_HOST: postgres
+          DB_HOST: localhost
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
