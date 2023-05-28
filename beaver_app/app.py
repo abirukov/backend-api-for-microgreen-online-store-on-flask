@@ -1,7 +1,6 @@
 from flask import Flask
-from logging.config import dictConfig
-
 from flask_smorest import Api
+from logging.config import dictConfig
 
 from beaver_app.blueprints.category.routes import category_blueprint
 from beaver_app.blueprints.product.routes import product_blueprint
@@ -9,7 +8,6 @@ from beaver_app.config import get_config
 
 
 def create_app() -> Flask:
-
     dictConfig({
         'version': 1,
         'formatters': {'default': {

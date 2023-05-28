@@ -10,8 +10,8 @@ from beaver_app.db.db_utils import save
 def app():
     app = create_app()
     app.config.update({
-        "TESTING": True,
-        "SERVER_NAME": 'localhost',
+        'TESTING': True,
+        'SERVER_NAME': 'localhost',
     })
     with (
         app.app_context(),
@@ -29,11 +29,11 @@ def client(app):
 @pytest.fixture
 def config():
     return {
-        "POSTGRES_DBNAME": "postgres",
-        "POSTGRES_HOST": "localhost",
-        "POSTGRES_PORT": "5432",
-        "POSTGRES_USER": "postgres",
-        "POSTGRES_PASSWORD": "devpass",
+        'POSTGRES_DBNAME': 'postgres',
+        'POSTGRES_HOST': 'localhost',
+        'POSTGRES_PORT': '5432',
+        'POSTGRES_USER': 'postgres',
+        'POSTGRES_PASSWORD': 'devpass',
     }
 
 
@@ -44,12 +44,12 @@ def not_existing_uuid():
 
 @pytest.fixture()
 def category():
-    return Category(title="Категория тест")
+    return Category(title='Категория тест')
 
 
 @pytest.fixture()
 def category_for_delete():
-    return Category(title="Категория тест удаление")
+    return Category(title='Категория тест удаление')
 
 
 @pytest.fixture()
@@ -71,9 +71,9 @@ def saved_category_for_delete(category_for_delete):
 @pytest.fixture()
 def product(saved_category):
     return Product(
-        title="Товар тест",
+        title='Товар тест',
         price=120.0,
-        description="Описание товара тест",
+        description='Описание товара тест',
         category_id=saved_category.id,
     )
 
@@ -81,9 +81,9 @@ def product(saved_category):
 @pytest.fixture()
 def product_for_delete(saved_category):
     return Product(
-        title="Товар тест удаление",
+        title='Товар тест удаление',
         price=120.0,
-        description="Описание товара тест",
+        description='Описание товара тест',
         category_id=saved_category.id,
     )
 
