@@ -58,10 +58,12 @@ jobs:
           python-version: 3.11
       - name: Install requirements
         run: pip install -r requirements.txt
+      - name: Run migrations
+        run: alembic upgrade head
       - name: Run test
         run: pytest --lf -vv
 
         env:
-          DB_HOST: localhost
+          DB_HOST: postgres
           DB_USERNAME: postgres
           DB_PASSWORD: postgres
