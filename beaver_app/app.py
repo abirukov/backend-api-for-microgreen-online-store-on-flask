@@ -1,9 +1,11 @@
 from flask import Flask
+from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from logging.config import dictConfig
 
 from beaver_app.blueprints.category.routes import category_blueprint
 from beaver_app.blueprints.product.routes import product_blueprint
+from beaver_app.blueprints.user.routes import user_blueprint
 from beaver_app.config import get_config
 
 
@@ -28,4 +30,6 @@ def create_app() -> Flask:
     api = Api(app)
     api.register_blueprint(product_blueprint)
     api.register_blueprint(category_blueprint)
+    api.register_blueprint(user_blueprint)
+    JWTManager(app)
     return app

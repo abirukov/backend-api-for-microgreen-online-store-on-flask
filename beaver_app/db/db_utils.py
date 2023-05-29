@@ -1,3 +1,5 @@
+import uuid
+
 from beaver_app.db.db import db_session, Base
 from beaver_app.enums import Entities
 
@@ -8,7 +10,7 @@ def save(db_model: Base) -> Base:
     return db_model
 
 
-def update_fields_by_id(type: Entities, id: int, new_fields: dict) -> None:
+def update_fields_by_id(type: Entities, id: int | uuid.UUID, new_fields: dict) -> None:
     db_session.query(type.value).filter(
         type.value.id == id,
     ).update(
@@ -17,7 +19,7 @@ def update_fields_by_id(type: Entities, id: int, new_fields: dict) -> None:
     db_session.commit()
 
 
-def get_by_id(type: Entities, id: int) -> Base | None:
+def get_by_id(type: Entities, id: int | uuid.UUID) -> Base | None:
     return type.value.query.filter(type.value.id == id).first()
 
 
@@ -25,7 +27,7 @@ def get_list(type: Entities) -> list[Base | None]:
     return type.value.query.all()
 
 
-def safe_delete(type: Entities, id: int) -> None:
+def safe_delete(type: Entities, id: int | uuid.UUID) -> None:
     update_fields_by_id(type, id, {'is_deleted': True})
 
 
