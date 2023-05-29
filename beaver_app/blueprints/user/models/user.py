@@ -4,7 +4,7 @@ from flask import current_app
 from sqlalchemy import ForeignKey, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, Mapped
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
 
 from beaver_app.blueprints.user.utils import generate_personal_code
 from beaver_app.db.db import Base
@@ -28,7 +28,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     tg_id: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     tg_username: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     personal_code: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
-    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False)
+    is_admin: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=True)
     inviter_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey('users.id'),
@@ -69,9 +69,16 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     @classmethod
     def authenticate_by_mail(cls, email: str, password: str) -> TypingUser | None:
         user = cls.query.filter(cls.email == email).first()
-        if user is None or not check_password_hash(user.password, password):
+        if user is None or not (user.password == password):
             return None
         return user
+
+    @classmethod
+    def is_admin_by_id(cls, jwt_user_id: uuid.UUID) -> bool:
+        user = cls.query.filter(cls.id == jwt_user_id).first()
+        if user:
+            return user.is_admin
+        return False
 
     def __repr__(self):
         return '<User {}>'.format(self.email)

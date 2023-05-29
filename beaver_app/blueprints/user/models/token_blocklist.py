@@ -1,6 +1,5 @@
 import uuid
 
-from flask_jwt_extended import get_current_user
 from sqlalchemy import Integer, String, ForeignKey
 
 from beaver_app.db.db import Base
@@ -13,8 +12,4 @@ class TokenBlocklist(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     jti: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     type: Mapped[str] = mapped_column(String(16), nullable=False)
-    user_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey('users.id'),
-        default=lambda: get_current_user().id,
-        nullable=False,
-    )
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
