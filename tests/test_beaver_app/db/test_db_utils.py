@@ -59,7 +59,7 @@ def test__get_by_id(entity_type, model):
     ],
 )
 def test__get_list(entity_type, models_list):
-    list_from_db = get_list(entity_type)
+    list_from_db = get_list(entity_type)['result']
 
     assert models_list == list_from_db
 

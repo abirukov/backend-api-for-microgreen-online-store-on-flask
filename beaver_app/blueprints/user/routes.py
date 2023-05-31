@@ -5,7 +5,8 @@ from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 
 from beaver_app.blueprints.user.models.token_blocklist import TokenBlocklist
 from beaver_app.blueprints.user.models.user import User
-from beaver_app.blueprints.user.schemas import UserSchema
+from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema, UsersListResponseSchema
+from beaver_app.blueprints.user.utils import generate_personal_code
 from beaver_app.db.db import db_session
 from beaver_app.db.db_utils import save, get_list, get_by_id, update, safe_delete
 
@@ -18,18 +19,21 @@ user_blueprint = Blueprint('users', 'users', url_prefix='/users')
 
 @user_blueprint.route('/', methods=['GET', 'POST'])
 class UsersView(MethodView):
-    @user_blueprint.response(200, UserSchema(many=True))
+    @user_blueprint.response(200, UsersListResponseSchema)
+    @user_blueprint.arguments(UsersGetListFilterSchema, location='query')
     @jwt_required()
-    def get(self):
-
+    def get(self, args):
         if User.is_admin_by_id(get_jwt_identity()):
-            return get_list(Entities.USER)
+            return get_list(
+                Entities.USER,
+                q_filter=args,
+            )
         return abort(403)
 
     @user_blueprint.arguments(UserSchema, location='json')
     @user_blueprint.response(201, UserSchema)
     def post(self, user_data):
-        user = save(
+        return save(
             User(
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
@@ -37,9 +41,12 @@ class UsersView(MethodView):
                 phone=user_data.phone,
                 email=user_data.email,
                 password=user_data.password,
+                tg_id=user_data.tg_id,
+                tg_username=user_data.tg_username,
+                personal_code=generate_personal_code(),
+                inviter_id=user_data.inviter_id,
             ),
         )
-        return user
 
 
 @user_blueprint.route('/<user_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -93,7 +100,7 @@ class UserRegisterView(MethodView):
         except sqlalchemy.exc.IntegrityError:
             db_session.rollback()
             return abort(400)
-        return jsonify(access_token=user.get_token())
+        return jsonify(access_token=user.create_token())
 
 
 @user_blueprint.route('/login', methods=['POST'])
@@ -103,7 +110,7 @@ class UserLoginView(MethodView):
     def post(self, login_data):
         user = User.authenticate_by_mail(login_data.email, login_data.password)
         if user is not None:
-            return jsonify(access_token=user.get_token())
+            return jsonify(access_token=user.create_token())
         return abort(400)
 
 
