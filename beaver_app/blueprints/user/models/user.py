@@ -4,12 +4,13 @@ from flask import current_app
 from sqlalchemy import ForeignKey, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, Mapped
+from werkzeug.security import check_password_hash
+
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
 from typing import TypeVar
-from beaver_app.db.enums import SqlAlchemyFiltersOperands
 
 TypingUser = TypeVar('TypingUser', bound='User')
 
@@ -43,7 +44,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     @classmethod
     def authenticate_by_mail(cls, email: str, password: str) -> TypingUser | None:
         user = cls.query.filter(cls.email == email).first()
-        if user is None or not (user.password == password):
+        if user is None or not check_password_hash(user.password, password):
             return None
         return user
 
@@ -55,8 +56,8 @@ class User(Base, TimestampMixin, IsDeletedMixin):
         return False
 
     @staticmethod
-    def get_search_params(search_value: str) -> dict:
-        fields = [
+    def get_search_fields() -> list:
+        return [
             'first_name',
             'last_name',
             'middle_name',
@@ -66,11 +67,3 @@ class User(Base, TimestampMixin, IsDeletedMixin):
             'tg_username',
             'personal_code',
         ]
-        list_result: dict = {'or': []}
-        for field in fields:
-            list_result['or'].append({
-                'field': field,
-                'op': SqlAlchemyFiltersOperands.ILIKE.value,
-                'value': f'%{search_value}%',
-            })
-        return list_result

@@ -12,4 +12,4 @@ class TokenBlocklist(Base, TimestampMixin):
     id: Mapped[int] = mapped_column(Integer, primary_key=True)
     jti: Mapped[str] = mapped_column(String(36), nullable=False, index=True)
     type: Mapped[str] = mapped_column(String(16), nullable=False)
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), nullable=False)
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id', ondelete='CASCADE'), nullable=False)

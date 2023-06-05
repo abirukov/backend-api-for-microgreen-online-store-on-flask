@@ -6,7 +6,6 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
-from beaver_app.db.enums import SqlAlchemyFiltersOperands
 
 if TYPE_CHECKING:
     from beaver_app.blueprints.category.models.category import Category
@@ -22,13 +21,5 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     category: Mapped['Category'] = relationship(back_populates='products')
 
     @staticmethod
-    def get_search_params(search_value: str) -> dict:
-        fields = ['title', 'description']
-        list_result: dict = {'or': []}
-        for field in fields:
-            list_result['or'].append({
-                'field': field,
-                'op': SqlAlchemyFiltersOperands.ILIKE.value,
-                'value': f'%{search_value}%',
-            })
-        return list_result
+    def get_search_fields() -> list:
+        return ['title', 'description']

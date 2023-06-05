@@ -6,8 +6,8 @@ from beaver_app.blueprints.user.models import User
 from beaver_app.db.db import db_session
 
 
-def is_current_user(jwt_user_id: uuid.UUID, checked_user_id: uuid.UUID) -> bool:
-    return jwt_user_id == checked_user_id
+def is_current_user(jwt_user_id: str, checked_user_id: uuid.UUID) -> bool:
+    return jwt_user_id == str(checked_user_id)
 
 
 def get_personal_code() -> str:
@@ -24,6 +24,6 @@ def generate_personal_code() -> str:
 
 
 def is_personal_code_uniq(personal_code: str) -> bool:
-    return db_session.query(
+    return not db_session.query(
         User.query.filter(User.personal_code == personal_code).exists(),
-    ).first()
+    ).first()[0]

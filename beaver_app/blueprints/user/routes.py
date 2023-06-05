@@ -2,11 +2,13 @@ import sqlalchemy
 from flask import jsonify, abort
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
+from werkzeug.security import generate_password_hash
 
 from beaver_app.blueprints.user.models.token_blocklist import TokenBlocklist
 from beaver_app.blueprints.user.models.user import User
-from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema, UsersListResponseSchema
-from beaver_app.blueprints.user.utils import generate_personal_code
+from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema,\
+    UsersListResponseSchema, UserLoginSchema
+from beaver_app.blueprints.user.utils import generate_personal_code, is_current_user
 from beaver_app.db.db import db_session
 from beaver_app.db.db_utils import save, get_list, get_by_id, update, safe_delete
 
@@ -32,21 +34,28 @@ class UsersView(MethodView):
 
     @user_blueprint.arguments(UserSchema, location='json')
     @user_blueprint.response(201, UserSchema)
+    @jwt_required()
     def post(self, user_data):
-        return save(
-            User(
-                first_name=user_data.first_name,
-                last_name=user_data.last_name,
-                middle_name=user_data.middle_name,
-                phone=user_data.phone,
-                email=user_data.email,
-                password=user_data.password,
-                tg_id=user_data.tg_id,
-                tg_username=user_data.tg_username,
-                personal_code=generate_personal_code(),
-                inviter_id=user_data.inviter_id,
-            ),
-        )
+        if not User.is_admin_by_id(get_jwt_identity()):
+            abort(403)
+        try:
+            return save(
+                User(
+                    first_name=user_data.first_name,
+                    last_name=user_data.last_name,
+                    middle_name=user_data.middle_name,
+                    phone=user_data.phone,
+                    email=user_data.email,
+                    password=generate_password_hash(user_data.password),
+                    tg_id=user_data.tg_id,
+                    tg_username=user_data.tg_username,
+                    personal_code=generate_personal_code(),
+                    inviter_id=user_data.inviter_id,
+                ),
+            )
+        except sqlalchemy.exc.IntegrityError:
+            db_session.rollback()
+            abort(400)
 
 
 @user_blueprint.route('/<user_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -57,7 +66,7 @@ class UserView(MethodView):
         user = get_by_id(Entities.USER, user_id)
         if user is None:
             abort(404)
-        if User.is_admin_by_id(get_jwt_identity()) or User.is_current_user(get_jwt_identity(), user.id):
+        if User.is_admin_by_id(get_jwt_identity()) or is_current_user(get_jwt_identity(), user.id):
             return user
         return abort(403)
 
@@ -68,7 +77,7 @@ class UserView(MethodView):
         user = get_by_id(Entities.USER, user_id)
         if user is None:
             abort(404)
-        if User.is_admin_by_id(get_jwt_identity()) or User.is_current_user(get_jwt_identity(), user.id):
+        if User.is_admin_by_id(get_jwt_identity()) or is_current_user(get_jwt_identity(), user.id):
             user.first_name = user_data.first_name
             user.last_name = user_data.last_name
             user.middle_name = user_data.middle_name
@@ -93,10 +102,23 @@ class UserView(MethodView):
 @user_blueprint.route('/register', methods=['POST'])
 class UserRegisterView(MethodView):
     @user_blueprint.arguments(UserSchema, location='json')
-    @user_blueprint.response(201, UserSchema)
+    @user_blueprint.response(201)
     def post(self, register_data):
         try:
-            user = save(register_data)
+            user = save(
+                User(
+                    first_name=register_data.first_name,
+                    last_name=register_data.last_name,
+                    middle_name=register_data.middle_name,
+                    phone=register_data.phone,
+                    email=register_data.email,
+                    password=generate_password_hash(register_data.password),
+                    tg_id=register_data.tg_id,
+                    tg_username=register_data.tg_username,
+                    personal_code=generate_personal_code(),
+                    inviter_id=register_data.inviter_id,
+                ),
+            )
         except sqlalchemy.exc.IntegrityError:
             db_session.rollback()
             return abort(400)
@@ -105,10 +127,10 @@ class UserRegisterView(MethodView):
 
 @user_blueprint.route('/login', methods=['POST'])
 class UserLoginView(MethodView):
-    @user_blueprint.arguments(UserSchema, location='json')
-    @user_blueprint.response(200, UserSchema)
+    @user_blueprint.arguments(UserLoginSchema, location='json')
+    @user_blueprint.response(200)
     def post(self, login_data):
-        user = User.authenticate_by_mail(login_data.email, login_data.password)
+        user = User.authenticate_by_mail(login_data['email'], login_data['password'])
         if user is not None:
             return jsonify(access_token=user.create_token())
         return abort(400)

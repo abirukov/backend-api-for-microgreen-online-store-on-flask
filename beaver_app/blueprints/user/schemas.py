@@ -32,3 +32,8 @@ class UsersGetListFilterSchema(BaseGetListFilterSchema):
 class UsersListResponseSchema(Schema):
     result = fields.List(fields.Nested(UserSchema()))
     pagination = fields.Nested(PaginationSchema())
+
+
+class UserLoginSchema(Schema):
+    email = fields.String(required=True)
+    password = fields.String(required=True)
