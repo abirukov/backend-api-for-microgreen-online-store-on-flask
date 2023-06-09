@@ -6,13 +6,9 @@ from beaver_app.enums import Entities
 
 def test__users_view__list_admin(client, admin_auth_headers, user_list):
     response = client.get('/users', follow_redirects=True, headers=admin_auth_headers)
-    count_entries = 0
     response_ids = [r_user['id'] for r_user in response.json['result']]
     for user in user_list:
-        if str(user.id) in response_ids:
-            count_entries += 1
-
-    assert count_entries == len(user_list)
+        assert str(user.id) in response_ids
 
 
 def test__users_view__list_client(client, first_client_auth_headers):

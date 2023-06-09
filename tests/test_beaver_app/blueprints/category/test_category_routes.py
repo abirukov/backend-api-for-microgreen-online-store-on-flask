@@ -4,13 +4,9 @@ from beaver_app.enums import Entities
 
 def test__categories_view__list(client, category_list):
     response = client.get('/categories', follow_redirects=True)
-    count_entries = 0
     response_ids = [r_category['id'] for r_category in response.json['result']]
     for category in category_list:
-        if str(category.id) in response_ids:
-            count_entries += 1
-
-    assert count_entries == len(category_list)
+        assert str(category.id) in response_ids
 
 
 def test__categories_view__create_success(client):
