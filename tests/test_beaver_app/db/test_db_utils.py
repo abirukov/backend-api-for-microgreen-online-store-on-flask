@@ -37,9 +37,7 @@ def test__update_fields_by_id(entity_type, model, new_data):
 
     model_in_db = get_by_id(entity_type, model.id)
     for field in new_data:
-        setattr(model, field, new_data[field])
-
-    assert model == model_in_db
+        assert getattr(model_in_db, field) == new_data[field]
 
 
 @pytest.mark.parametrize(
@@ -57,6 +55,20 @@ def test__get_by_id(entity_type, model):
 
 
 @pytest.mark.parametrize(
+    'entity_type, model_id',
+    [
+        (Entities.CATEGORY, pytest.lazy_fixture('not_existing_uuid')),
+        (Entities.PRODUCT, pytest.lazy_fixture('not_existing_uuid')),
+        (Entities.USER, pytest.lazy_fixture('not_existing_uuid')),
+    ],
+)
+def test__get_by_id__not_existing_uuid(entity_type, model_id):
+    model_in_db = get_by_id(entity_type, model_id)
+
+    assert model_in_db is None
+
+
+@pytest.mark.parametrize(
     'entity_type, models_list',
     [
         (Entities.CATEGORY, pytest.lazy_fixture('category_list')),
@@ -67,11 +79,8 @@ def test__get_by_id(entity_type, model):
 def test__get_list(entity_type, models_list):
     list_from_db = get_list(entity_type)['result']
     models_ids = [elem.id for elem in models_list]
-    count_matches = 0
     for elem in list_from_db:
-        if elem.id in models_ids:
-            count_matches += 1
-    assert count_matches == len(models_list)
+        assert elem.id in models_ids
 
 
 def test__get_list__search(saved_user_admin):
