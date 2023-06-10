@@ -2,8 +2,8 @@ import random
 import string
 import uuid
 
-from beaver_app.blueprints.user.models import User
-from beaver_app.db.db import db_session
+from beaver_app.db.db_utils import is_entity_exist_by_field
+from beaver_app.enums import Entities
 
 
 def is_current_user(jwt_user_id: str, checked_user_id: uuid.UUID) -> bool:
@@ -24,6 +24,4 @@ def generate_personal_code() -> str:
 
 
 def is_personal_code_uniq(personal_code: str) -> bool:
-    return not db_session.query(
-        User.query.filter(User.personal_code == personal_code).exists(),
-    ).first()[0]
+    return not is_entity_exist_by_field(Entities.USER, 'personal_code', personal_code)

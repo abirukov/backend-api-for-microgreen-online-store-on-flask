@@ -1,4 +1,5 @@
 import uuid
+from typing import Any
 
 import sqlalchemy
 from sqlalchemy_filters import apply_pagination, apply_sort, apply_filters
@@ -126,3 +127,22 @@ def query_process(query: sqlalchemy.orm.query.Query, query_params: dict):
         'result': query.all(),
         'pagination': pagination,
     }
+
+
+def is_entity_exist_by_field(entity: Entities, field_name: str, field_value: Any) -> bool:
+    return db_session.query(
+        entity.value.query.filter(getattr(entity.value, field_name) == field_value).exists(),
+    ).first()[0]
+
+
+def check_entity_by_unique_fields(entity: Entities, unique_attrs, data: object) -> list:
+    exist_attrs = []
+    for attr in unique_attrs:
+        is_exist_user_by_attr = is_entity_exist_by_field(
+            entity,
+            attr,
+            getattr(data, attr),
+        )
+        if is_exist_user_by_attr:
+            exist_attrs.append(attr)
+    return exist_attrs
