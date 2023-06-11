@@ -1,14 +1,16 @@
 import uuid
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, List
 
 from sqlalchemy import String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
+from beaver_app.blueprints.basket.models.basket_product import BasketProduct
 
 if TYPE_CHECKING:
     from beaver_app.blueprints.category.models.category import Category
+    from beaver_app.blueprints.basket.models.basket import Basket
 
 
 class Product(Base, TimestampMixin, IsDeletedMixin):
@@ -19,6 +21,8 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     description: Mapped[str] = mapped_column(Text())
     category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('categories.id'), primary_key=True)
     category: Mapped['Category'] = relationship(back_populates='products')
+    baskets: Mapped[List['Basket']] = relationship(secondary='basket_products', back_populates='products')
+    basket_products: Mapped[List['BasketProduct']] = relationship(back_populates='product')
 
     @staticmethod
     def get_search_fields() -> list:

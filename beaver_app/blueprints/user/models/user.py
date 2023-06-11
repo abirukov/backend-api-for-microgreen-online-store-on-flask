@@ -3,14 +3,17 @@ import uuid
 from flask import current_app
 from sqlalchemy import ForeignKey, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 from werkzeug.security import check_password_hash
 
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
+
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
-from typing import TypeVar
+from typing import TypeVar, TYPE_CHECKING
+if TYPE_CHECKING:
+    from beaver_app.blueprints.basket.models.basket import Basket
 
 TypingUser = TypeVar('TypingUser', bound='User')
 
@@ -28,6 +31,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     tg_username: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     personal_code: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     is_admin: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=True)
+    basket: Mapped['Basket'] = relationship(back_populates='baskets')
     inviter_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey('users.id'),

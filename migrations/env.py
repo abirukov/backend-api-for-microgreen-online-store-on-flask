@@ -22,6 +22,7 @@ if config.config_file_name is not None:
 from beaver_app.blueprints.category.models import *
 from beaver_app.blueprints.product.models import *
 from beaver_app.blueprints.user.models import *
+from beaver_app.blueprints.basket.models import *
 target_metadata = Base.metadata
 # target_metadata = None
 
