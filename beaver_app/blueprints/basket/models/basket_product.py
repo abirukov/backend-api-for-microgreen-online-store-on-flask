@@ -15,9 +15,9 @@ if TYPE_CHECKING:
 class BasketProduct(Base, TimestampMixin):
     __tablename__ = 'basket_products'
     basket_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('baskets.id'), primary_key=True)
-    basket: Mapped['Basket'] = relationship(back_populates='basket')
+    basket: Mapped['Basket'] = relationship(back_populates='basket_products')
     product_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('products.id'), primary_key=True)
-    product: Mapped['Product'] = relationship(back_populates='product')
+    product: Mapped['Product'] = relationship(back_populates='product_baskets')
     quantity: Mapped[float]
 
     @staticmethod

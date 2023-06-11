@@ -17,7 +17,7 @@ class Basket(Base, TimestampMixin, IsDeletedMixin):
     __tablename__ = 'baskets'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True)
-    user: Mapped['User'] = relationship(back_populates='baskets')
+    user: Mapped['User'] = relationship(back_populates='basket')
     products: Mapped[List['Product']] = relationship(secondary='basket_products', back_populates='baskets')
     basket_products: Mapped[List['BasketProduct']] = relationship(back_populates='basket')
 

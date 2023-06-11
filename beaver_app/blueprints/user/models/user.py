@@ -31,7 +31,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     tg_username: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     personal_code: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     is_admin: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=True)
-    basket: Mapped['Basket'] = relationship(back_populates='baskets')
+    basket: Mapped['Basket'] = relationship(back_populates='user')
     inviter_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey('users.id'),
