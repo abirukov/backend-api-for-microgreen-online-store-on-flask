@@ -67,3 +67,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
             'tg_username',
             'personal_code',
         ]
+
+    @staticmethod
+    def get_uniq_fields() -> list:
+        return ['phone', 'email', 'tg_id']

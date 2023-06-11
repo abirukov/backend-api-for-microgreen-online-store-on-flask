@@ -104,8 +104,7 @@ class UserRegisterView(MethodView):
     @user_blueprint.arguments(UserSchema, location='json')
     @user_blueprint.response(201)
     def post(self, register_data):
-        unique_attrs = ['phone', 'email', 'tg_id']
-        error_attrs = check_entity_by_unique_fields(Entities.USER, unique_attrs, register_data)
+        error_attrs = check_entity_by_unique_fields(Entities.USER, User.get_uniq_fields(), register_data)
         if error_attrs:
             return response_unique_fields_error(error_attrs)
         user = save(

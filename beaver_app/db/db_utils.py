@@ -135,7 +135,7 @@ def is_entity_exist_by_field(entity: Entities, field_name: str, field_value: Any
     ).first()[0]
 
 
-def check_entity_by_unique_fields(entity: Entities, unique_attrs, data: object) -> list:
+def check_entity_by_unique_fields(entity: Entities, unique_attrs: list, data: object) -> list:
     exist_attrs = []
     for attr in unique_attrs:
         is_exist_user_by_attr = is_entity_exist_by_field(
