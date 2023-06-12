@@ -69,5 +69,5 @@ class User(Base, TimestampMixin, IsDeletedMixin):
         ]
 
     @staticmethod
-    def get_uniq_fields() -> list:
+    def get_unique_fields() -> list[str]:
         return ['phone', 'email', 'tg_id']
