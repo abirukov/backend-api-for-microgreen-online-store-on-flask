@@ -6,7 +6,7 @@ from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import mapped_column, Mapped, relationship
 from werkzeug.security import check_password_hash
 
-from beaver_app.db.db import Base
+from beaver_app.blueprints.models import BaseModel
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 
 from flask_jwt_extended import create_access_token
@@ -18,7 +18,7 @@ if TYPE_CHECKING:
 TypingUser = TypeVar('TypingUser', bound='User')
 
 
-class User(Base, TimestampMixin, IsDeletedMixin):
+class User(BaseModel, TimestampMixin, IsDeletedMixin):
     __tablename__ = 'users'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name: Mapped[str] = mapped_column(String, nullable=True)
@@ -31,12 +31,13 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     tg_username: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     personal_code: Mapped[str] = mapped_column(String(255), unique=True, nullable=True)
     is_admin: Mapped[bool] = mapped_column(Boolean(), default=False, nullable=True)
-    basket: Mapped['Basket'] = relationship(back_populates='user')
     inviter_id: Mapped[uuid.UUID] = mapped_column(
         UUID(as_uuid=True),
         ForeignKey('users.id'),
         nullable=True,
     )
+
+    basket: Mapped['Basket'] = relationship(back_populates='user')
 
     def create_token(self) -> str:
         token = create_access_token(
