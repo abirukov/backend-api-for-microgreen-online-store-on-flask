@@ -1,8 +1,7 @@
 from beaver_app.db.db import Base
-from abc import ABC
 
 
-class BaseModel(ABC, Base):
+class BaseModel(Base):
     @staticmethod
     def get_search_fields() -> list:
         return []
