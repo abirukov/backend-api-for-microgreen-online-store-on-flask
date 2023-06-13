@@ -5,7 +5,7 @@ from sqlalchemy import String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column, relationship
 
-from beaver_app.blueprints.models import BaseModel
+from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 from beaver_app.blueprints.basket.models.basket_product import BasketProduct
 
@@ -14,7 +14,7 @@ if TYPE_CHECKING:
     from beaver_app.blueprints.basket.models.basket import Basket
 
 
-class Product(BaseModel, TimestampMixin, IsDeletedMixin):
+class Product(Base, TimestampMixin, IsDeletedMixin):
     __tablename__ = 'products'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, unique=True)
     title: Mapped[str] = mapped_column(String())
