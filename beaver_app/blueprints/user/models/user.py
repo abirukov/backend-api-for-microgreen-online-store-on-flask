@@ -3,19 +3,22 @@ import uuid
 from flask import current_app
 from sqlalchemy import ForeignKey, String, Boolean
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy.orm import mapped_column, Mapped
+from sqlalchemy.orm import mapped_column, Mapped, relationship
 from werkzeug.security import check_password_hash
 
-from beaver_app.db.db import Base
+from beaver_app.blueprints.models import BaseModel
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
+
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
-from typing import TypeVar
+from typing import TypeVar, TYPE_CHECKING
+if TYPE_CHECKING:
+    from beaver_app.blueprints.basket.models.basket import Basket
 
 TypingUser = TypeVar('TypingUser', bound='User')
 
 
-class User(Base, TimestampMixin, IsDeletedMixin):
+class User(BaseModel, TimestampMixin, IsDeletedMixin):
     __tablename__ = 'users'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name: Mapped[str] = mapped_column(String, nullable=True)
@@ -33,6 +36,8 @@ class User(Base, TimestampMixin, IsDeletedMixin):
         ForeignKey('users.id'),
         nullable=True,
     )
+
+    basket: Mapped['Basket'] = relationship(back_populates='user')
 
     def create_token(self) -> str:
         token = create_access_token(

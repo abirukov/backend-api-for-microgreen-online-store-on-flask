@@ -34,7 +34,8 @@ def upgrade() -> None:
     sa.Column('created_at', sa.DateTime(), nullable=False),
     sa.Column('updated_at', sa.DateTime(), nullable=False),
     sa.ForeignKeyConstraint(['category_id'], ['categories.id'], ),
-    sa.PrimaryKeyConstraint('id', 'category_id')
+    sa.PrimaryKeyConstraint('id', 'category_id'),
+    sa.UniqueConstraint('id'),
     )
     # ### end Alembic commands ###
 
