@@ -1,7 +1,7 @@
 from flask import abort
 from flask.views import MethodView
 
-from beaver_app.blueprints.product.schemas import ProductSchema
+from beaver_app.blueprints.product.schemas import ProductSchema, ProductsGetListFilterSchema, ProductsListResponseSchema
 from beaver_app.blueprints.product.models.product import Product
 from beaver_app.db.db_utils import save, update, get_by_id, safe_delete, get_list
 from beaver_app.enums import Entities
@@ -13,9 +13,10 @@ product_blueprint = Blueprint('products', 'products', url_prefix='/products')
 
 @product_blueprint.route('/', methods=['GET', 'POST'])
 class ProductsView(MethodView):
-    @product_blueprint.response(200, ProductSchema(many=True))
-    def get(self):
-        return get_list(Entities.PRODUCT)
+    @product_blueprint.response(200, ProductsListResponseSchema)
+    @product_blueprint.arguments(ProductsGetListFilterSchema, location='query')
+    def get(self, args):
+        return get_list(Entities.PRODUCT, args)
 
     @product_blueprint.arguments(ProductSchema, location='json')
     @product_blueprint.response(201, ProductSchema)

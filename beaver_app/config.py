@@ -19,6 +19,7 @@ def get_config() -> Mapping[str, Any]:
         'API_TITLE': 'Green Beaver API',
         'API_VERSION': 'v1',
         'OPENAPI_VERSION': '3.0.2',
+        'TOKEN_LIFETIME_IN_HOURS': int(os.environ.get('TOKEN_LIFETIME_IN_HOURS', 24)),
     }
 
 

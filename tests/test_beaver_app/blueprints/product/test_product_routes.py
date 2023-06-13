@@ -4,14 +4,9 @@ from beaver_app.enums import Entities
 
 def test__products_view__list(client, product_list):
     response = client.get('/products', follow_redirects=True)
-    count_entries = 0
-
-    response_ids = [r_product['id'] for r_product in response.json]
+    response_ids = [r_product['id'] for r_product in response.json['result']]
     for product in product_list:
-        if str(product.id) in response_ids:
-            count_entries += 1
-
-    assert count_entries == len(product_list)
+        assert str(product.id) in response_ids
 
 
 def test__products_view__create_success(client, saved_category):

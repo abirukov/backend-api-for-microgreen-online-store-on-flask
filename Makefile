@@ -10,6 +10,6 @@ style:
 types:
 	mypy .
 test:
-	pytest --lf -vv
+	pytest --lf -vv --cov=beaver_app --cov-branch --cov-fail-under=80 .
 check:
 	make style types test

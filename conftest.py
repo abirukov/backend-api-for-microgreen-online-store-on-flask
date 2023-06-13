@@ -1,7 +1,10 @@
 import pytest
+from werkzeug.security import generate_password_hash
+
 from beaver_app.app import create_app
 from beaver_app.blueprints.category.models import Category
 from beaver_app.blueprints.product.models import Product
+from beaver_app.blueprints.user.models import User
 from beaver_app.db.db import db_session
 from beaver_app.db.db_utils import save
 
@@ -81,9 +84,9 @@ def product(saved_category):
 @pytest.fixture()
 def product_for_delete(saved_category):
     return Product(
-        title='Товар тест удаление',
+        title='Товар удаление',
         price=120.0,
-        description='Описание товара тест',
+        description='Описание товар удаление',
         category_id=saved_category.id,
     )
 
@@ -112,3 +115,134 @@ def category_list(saved_category, saved_category_for_delete):
 @pytest.fixture()
 def product_list(saved_product, saved_product_for_delete):
     return [saved_product, saved_product_for_delete]
+
+
+@pytest.fixture()
+def not_hash_admin_password():
+    return 'admin@admin.ru'
+
+
+@pytest.fixture()
+def user_admin(not_hash_admin_password):
+    return User(
+        first_name='admin',
+        last_name='admin',
+        middle_name='admin',
+        phone='79998887766',
+        email='admin@admin.ru',
+        password=not_hash_admin_password,
+        tg_id='555555555',
+        tg_username='adminadmin',
+        personal_code='AD11',
+        is_admin=True,
+        inviter_id=None,
+    )
+
+
+@pytest.fixture()
+def user_client_first(saved_user_admin):
+    return User(
+        first_name='first',
+        last_name='first',
+        middle_name='first',
+        phone='79998887701',
+        email='first@first.ru',
+        password='first@first.ru',
+        tg_id='1111111111',
+        tg_username='firstfirst',
+        personal_code='FT11',
+        inviter_id=saved_user_admin.id,
+    )
+
+
+@pytest.fixture()
+def user_client_for_delete(saved_user_admin):
+    return User(
+        first_name='for_delete',
+        last_name='for_delete',
+        middle_name='for_delete',
+        phone='79998887702',
+        email='for_delete@for_delete.ru',
+        password='for_delete@for_delete.ru',
+        tg_id='3111111111',
+        tg_username='for_deletefor_delete',
+        personal_code='FD11',
+        inviter_id=saved_user_admin.id,
+    )
+
+
+@pytest.fixture()
+def user_client_second(saved_user_admin):
+    return User(
+        first_name='second',
+        last_name='second',
+        middle_name='second',
+        phone='79998887703',
+        email='second@second.ru',
+        password='second@second.ru',
+        tg_id='2111111111',
+        tg_username='secondsecond',
+        personal_code='FS11',
+        inviter_id=saved_user_admin.id,
+    )
+
+
+@pytest.fixture()
+def saved_user_admin(user_admin):
+    user_admin.password = generate_password_hash(user_admin.password)
+    save(user_admin)
+    yield user_admin
+    User.query.filter_by(id=user_admin.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def saved_user_client_first(user_client_first):
+    user_client_first.password = generate_password_hash(user_client_first.password)
+    save(user_client_first)
+    yield user_client_first
+    User.query.filter_by(id=user_client_first.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def saved_user_client_second(user_client_second):
+    user_client_second.password = generate_password_hash(user_client_second.password)
+    save(user_client_second)
+    yield user_client_second
+    User.query.filter_by(id=user_client_second.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def saved_user_client_for_delete(user_client_for_delete):
+    user_client_for_delete.password = generate_password_hash(user_client_for_delete.password)
+    save(user_client_for_delete)
+    yield user_client_for_delete
+    User.query.filter_by(id=user_client_for_delete.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def user_list(
+    saved_user_admin,
+    saved_user_client_first,
+    saved_user_client_second,
+    saved_user_client_for_delete,
+):
+    return [
+        saved_user_admin,
+        saved_user_client_first,
+        saved_user_client_second,
+        saved_user_client_for_delete,
+    ]
+
+
+@pytest.fixture()
+def admin_auth_headers(saved_user_admin):
+    return {'Authorization': f'Bearer {saved_user_admin.create_token()}'}
+
+
+@pytest.fixture()
+def first_client_auth_headers(saved_user_client_first):
+    return {'Authorization': f'Bearer {saved_user_client_first.create_token()}'}
