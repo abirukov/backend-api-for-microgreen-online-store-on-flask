@@ -1,7 +1,8 @@
 import pytest
 
 from beaver_app.db.db_utils import save, get_by_id, update, update_fields_by_id, get_list, \
-    safe_delete, delete, get_search_params, get_query_params, query_process
+    safe_delete, delete, get_search_params, get_query_params, query_process, is_entity_exist_by_field, \
+    check_entity_by_unique_fields
 from beaver_app.db.enums import SqlAlchemyFiltersOperands
 from beaver_app.enums import Entities
 
@@ -280,3 +281,69 @@ def test__query_process(saved_product):
     }
 
     assert query_process(query, query_params)['result'] == [saved_product]
+
+
+@pytest.mark.parametrize(
+    'entity_type, model, field, value, expected',
+    [
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), 'title', 'Категория тест', True),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), 'title', 'тест', False),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), 'title', 'Товар тест', True),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), 'title', 'тест', False),
+        (Entities.USER, pytest.lazy_fixture('saved_user_admin'), 'tg_id', '555555555', True),
+        (Entities.USER, pytest.lazy_fixture('saved_user_admin'), 'tg_id', '555555556', False),
+    ],
+)
+def test_is_entity_exist_by_field(entity_type, model, field, value, expected):  # noqa: U100
+    assert is_entity_exist_by_field(entity_type, field, value) == expected
+
+
+@pytest.mark.parametrize(
+    'entity_type, model, unique_attrs, data, expected',
+    [
+        (
+            Entities.CATEGORY,
+            pytest.lazy_fixture('saved_category'),
+            ['title'],
+            Entities.CATEGORY.value(title='Категория тест'),
+            ['title'],
+        ),
+        (
+            Entities.CATEGORY,
+            pytest.lazy_fixture('saved_category'),
+            ['title'],
+            Entities.CATEGORY.value(title='тест'),
+            [],
+        ),
+        (
+            Entities.PRODUCT,
+            pytest.lazy_fixture('saved_product'),
+            ['title', 'price'],
+            Entities.PRODUCT.value(title='Товар тест', price=130.0),
+            ['title'],
+        ),
+        (
+            Entities.PRODUCT,
+            pytest.lazy_fixture('saved_product'),
+            ['title', 'price'],
+            Entities.PRODUCT.value(title='тест', price=130.0),
+            [],
+        ),
+        (
+            Entities.USER,
+            pytest.lazy_fixture('saved_user_admin'),
+            ['phone', 'email', 'tg_id'],
+            pytest.lazy_fixture('user_admin'),
+            ['phone', 'email', 'tg_id'],
+        ),
+        (
+            Entities.USER,
+            pytest.lazy_fixture('saved_user_admin'),
+            ['phone', 'email', 'tg_id'],
+            pytest.lazy_fixture('user_client_first'),
+            [],
+        ),
+    ],
+)
+def test_check_entity_by_unique_fields(entity_type, model, unique_attrs, data, expected):  # noqa: U100
+    assert check_entity_by_unique_fields(entity_type, unique_attrs, data) == expected

@@ -1,4 +1,3 @@
-import sqlalchemy
 from flask import jsonify, abort
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
@@ -9,8 +8,9 @@ from beaver_app.blueprints.user.models.user import User
 from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema,\
     UsersListResponseSchema, UserLoginSchema
 from beaver_app.blueprints.user.utils import generate_personal_code, is_current_user
-from beaver_app.db.db import db_session
-from beaver_app.db.db_utils import save, get_list, get_by_id, update, safe_delete
+from beaver_app.blueprints.utils import response_unique_fields_error
+from beaver_app.db.db_utils import save, get_list, get_by_id, update, safe_delete,\
+    check_entity_by_unique_fields
 
 from flask_smorest import Blueprint
 
@@ -38,24 +38,24 @@ class UsersView(MethodView):
     def post(self, user_data):
         if not User.is_admin_by_id(get_jwt_identity()):
             abort(403)
-        try:
-            return save(
-                User(
-                    first_name=user_data.first_name,
-                    last_name=user_data.last_name,
-                    middle_name=user_data.middle_name,
-                    phone=user_data.phone,
-                    email=user_data.email,
-                    password=generate_password_hash(user_data.password),
-                    tg_id=user_data.tg_id,
-                    tg_username=user_data.tg_username,
-                    personal_code=generate_personal_code(),
-                    inviter_id=user_data.inviter_id,
-                ),
-            )
-        except sqlalchemy.exc.IntegrityError:
-            db_session.rollback()
-            abort(400)
+        unique_attrs = ['phone', 'email', 'tg_id']
+        error_attrs = check_entity_by_unique_fields(Entities.USER, unique_attrs, user_data)
+        if error_attrs:
+            return response_unique_fields_error(error_attrs)
+        return save(
+            User(
+                first_name=user_data.first_name,
+                last_name=user_data.last_name,
+                middle_name=user_data.middle_name,
+                phone=user_data.phone,
+                email=user_data.email,
+                password=generate_password_hash(user_data.password),
+                tg_id=user_data.tg_id,
+                tg_username=user_data.tg_username,
+                personal_code=generate_personal_code(),
+                inviter_id=user_data.inviter_id,
+            ),
+        )
 
 
 @user_blueprint.route('/<user_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -104,24 +104,23 @@ class UserRegisterView(MethodView):
     @user_blueprint.arguments(UserSchema, location='json')
     @user_blueprint.response(201)
     def post(self, register_data):
-        try:
-            user = save(
-                User(
-                    first_name=register_data.first_name,
-                    last_name=register_data.last_name,
-                    middle_name=register_data.middle_name,
-                    phone=register_data.phone,
-                    email=register_data.email,
-                    password=generate_password_hash(register_data.password),
-                    tg_id=register_data.tg_id,
-                    tg_username=register_data.tg_username,
-                    personal_code=generate_personal_code(),
-                    inviter_id=register_data.inviter_id,
-                ),
-            )
-        except sqlalchemy.exc.IntegrityError:
-            db_session.rollback()
-            return abort(400)
+        error_attrs = check_entity_by_unique_fields(Entities.USER, User.get_uniq_fields(), register_data)
+        if error_attrs:
+            return response_unique_fields_error(error_attrs)
+        user = save(
+            User(
+                first_name=register_data.first_name,
+                last_name=register_data.last_name,
+                middle_name=register_data.middle_name,
+                phone=register_data.phone,
+                email=register_data.email,
+                password=generate_password_hash(register_data.password),
+                tg_id=register_data.tg_id,
+                tg_username=register_data.tg_username,
+                personal_code=generate_personal_code(),
+                inviter_id=register_data.inviter_id,
+            ),
+        )
         return jsonify(access_token=user.create_token())
 
 
