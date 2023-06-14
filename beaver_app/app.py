@@ -3,6 +3,7 @@ from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from logging.config import dictConfig
 
+from beaver_app.blueprints.basket.routes import basket_blueprint
 from beaver_app.blueprints.category.routes import category_blueprint
 from beaver_app.blueprints.product.routes import product_blueprint
 from beaver_app.blueprints.user.models import TokenBlocklist
@@ -33,6 +34,7 @@ def create_app() -> Flask:
     api.register_blueprint(product_blueprint)
     api.register_blueprint(category_blueprint)
     api.register_blueprint(user_blueprint)
+    api.register_blueprint(basket_blueprint)
     jwt_manager = JWTManager(app)
 
     @jwt_manager.token_in_blocklist_loader

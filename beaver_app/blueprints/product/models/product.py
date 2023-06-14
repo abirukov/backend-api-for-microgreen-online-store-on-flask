@@ -7,11 +7,11 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
-from beaver_app.blueprints.basket.models.basket_product import BasketProduct
+from beaver_app.blueprints.category.models.category import Category
 
 if TYPE_CHECKING:
-    from beaver_app.blueprints.category.models.category import Category
     from beaver_app.blueprints.basket.models.basket import Basket
+    from beaver_app.blueprints.basket.models.basket_product import BasketProduct
 
 
 class Product(Base, TimestampMixin, IsDeletedMixin):
@@ -23,8 +23,12 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('categories.id'), primary_key=True)
 
     category: Mapped['Category'] = relationship(back_populates='products')
-    baskets: Mapped[List['Basket']] = relationship(secondary='basket_products', back_populates='products')
-    product_baskets: Mapped[List['BasketProduct']] = relationship(back_populates='product')
+    baskets: Mapped[List['Basket']] = relationship(
+        secondary='basket_products',
+        back_populates='products',
+        overlaps='basket_products',
+    )
+    product_baskets: Mapped[List['BasketProduct']] = relationship(back_populates='product', overlaps='baskets,products')
 
     @staticmethod
     def get_search_fields() -> list:

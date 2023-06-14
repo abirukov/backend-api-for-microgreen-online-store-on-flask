@@ -51,6 +51,8 @@ def test__users_view__create_success(client, saved_user_admin, admin_auth_header
     assert user_data['inviter_id'] == UUID(response_dict['inviter_id'])
 
     user = get_by_id(Entities.USER, response_dict['id'])
+
+    delete(user.basket)
     delete(user)
 
 
@@ -317,6 +319,7 @@ def test__users_view__register_success(client, saved_user_admin):
     assert response_dict['access_token'] is not None
 
     user = get_list(Entities.USER, {'email': user_data['email']})['result'][0]
+    delete(user.basket)
     delete(user)
 
 
