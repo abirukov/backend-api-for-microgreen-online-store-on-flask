@@ -21,4 +21,8 @@ class Basket(Base, TimestampMixin, IsDeletedMixin):
 
     products: Mapped[List['Product']] = relationship(secondary='basket_products', back_populates='baskets')
     user: Mapped['User'] = relationship(back_populates='basket', cascade='delete')
-    basket_products: Mapped[List['BasketProduct']] = relationship(back_populates='basket', overlaps='products')
+    basket_products: Mapped[List['BasketProduct']] = relationship(
+        back_populates='basket',
+        overlaps='products',
+        cascade='all, delete',
+    )

@@ -2,6 +2,7 @@ import pytest
 from werkzeug.security import generate_password_hash
 
 from beaver_app.app import create_app
+from beaver_app.blueprints.basket.models import Basket, BasketProduct
 from beaver_app.blueprints.category.models import Category
 from beaver_app.blueprints.product.models import Product
 from beaver_app.blueprints.user.models import User
@@ -103,8 +104,6 @@ def saved_product(product):
 def saved_product_for_delete(product_for_delete):
     save(product_for_delete)
     yield product_for_delete
-    Product.query.filter_by(id=product_for_delete.id).delete()
-    db_session.commit()
 
 
 @pytest.fixture()
@@ -246,3 +245,52 @@ def admin_auth_headers(saved_user_admin):
 @pytest.fixture()
 def first_client_auth_headers(saved_user_client_first):
     return {'Authorization': f'Bearer {saved_user_client_first.create_token()}'}
+
+
+@pytest.fixture()
+def basket(saved_user_client_first):
+    return Basket(user_id=saved_user_client_first.id)
+
+
+@pytest.fixture()
+def basket_for_delete(saved_user_client_first):
+    return Basket(user_id=saved_user_client_first.id)
+
+
+@pytest.fixture()
+def saved_basket(basket):
+    save(basket)
+    yield basket
+    Basket.query.filter_by(id=basket.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def saved_basket_for_delete(basket_for_delete):
+    save(basket_for_delete)
+    yield basket_for_delete
+
+
+@pytest.fixture()
+def basket_product(saved_basket, saved_product):
+    return BasketProduct(
+        basket_id=saved_basket.id,
+        product_id=saved_product.id,
+        quantity=3,
+    )
+
+
+@pytest.fixture()
+def saved_basket_product(basket_product):
+    save(basket_product)
+    yield basket_product
+    BasketProduct.query.filter_by(
+        basket_id=basket_product.basket_id,
+        product_id=basket_product.basket_id,
+    ).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def basket_list(saved_basket):
+    return [saved_basket]

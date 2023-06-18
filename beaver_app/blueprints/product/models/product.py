@@ -20,13 +20,18 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     title: Mapped[str] = mapped_column(String())
     price: Mapped[float] = mapped_column(Float())
     description: Mapped[str] = mapped_column(Text())
-    category_id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), ForeignKey('categories.id'), primary_key=True)
+    category_id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True),
+        ForeignKey('categories.id', ondelete='CASCADE'),
+        primary_key=True,
+    )
 
     category: Mapped['Category'] = relationship(back_populates='products')
     baskets: Mapped[List['Basket']] = relationship(
         secondary='basket_products',
         back_populates='products',
         overlaps='basket_products',
+        cascade='all, delete',
     )
     product_baskets: Mapped[List['BasketProduct']] = relationship(back_populates='product', overlaps='baskets,products')
 

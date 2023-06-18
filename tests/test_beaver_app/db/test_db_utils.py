@@ -13,6 +13,7 @@ from beaver_app.enums import Entities
         (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
         (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
         (Entities.USER, pytest.lazy_fixture('saved_user_admin')),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket')),
     ],
 )
 def test__save(entity_type, model):
@@ -31,6 +32,7 @@ def test__save(entity_type, model):
         (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), {'title': 'updated_title'}),
         (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), {'title': 'updated_title'}),
         (Entities.USER, pytest.lazy_fixture('saved_user_admin'), {'first_name': 'updated_first_name'}),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket'), {'is_deleted': True}),
     ],
 )
 def test__update_fields_by_id(entity_type, model, new_data):
@@ -47,6 +49,7 @@ def test__update_fields_by_id(entity_type, model, new_data):
         (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
         (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
         (Entities.USER, pytest.lazy_fixture('saved_user_admin')),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket')),
     ],
 )
 def test__get_by_id(entity_type, model):
@@ -61,6 +64,7 @@ def test__get_by_id(entity_type, model):
         (Entities.CATEGORY, pytest.lazy_fixture('not_existing_uuid')),
         (Entities.PRODUCT, pytest.lazy_fixture('not_existing_uuid')),
         (Entities.USER, pytest.lazy_fixture('not_existing_uuid')),
+        (Entities.BASKET, pytest.lazy_fixture('not_existing_uuid')),
     ],
 )
 def test__get_by_id__not_existing_uuid(entity_type, model_id):
@@ -75,6 +79,7 @@ def test__get_by_id__not_existing_uuid(entity_type, model_id):
         (Entities.CATEGORY, pytest.lazy_fixture('category_list')),
         (Entities.PRODUCT, pytest.lazy_fixture('product_list')),
         (Entities.USER, pytest.lazy_fixture('user_list')),
+        (Entities.BASKET, pytest.lazy_fixture('basket_list')),
     ],
 )
 def test__get_list(entity_type, models_list):
@@ -95,6 +100,7 @@ def test__get_list__search(saved_user_admin):
         (Entities.CATEGORY, pytest.lazy_fixture('saved_category')),
         (Entities.PRODUCT, pytest.lazy_fixture('saved_product')),
         (Entities.USER, pytest.lazy_fixture('saved_user_client_first')),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket')),
     ],
 )
 def test__safe_delete(entity_type, model):
@@ -111,6 +117,7 @@ def test__safe_delete(entity_type, model):
         (Entities.CATEGORY, pytest.lazy_fixture('saved_category'), {'title': 'updated_title'}),
         (Entities.PRODUCT, pytest.lazy_fixture('saved_product'), {'title': 'updated_title'}),
         (Entities.USER, pytest.lazy_fixture('saved_user_admin'), {'first_name': 'updated_first_name'}),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket'), {'is_deleted': True}),
     ],
 )
 def test__update(entity_type, model, new_data):
@@ -126,9 +133,10 @@ def test__update(entity_type, model, new_data):
 @pytest.mark.parametrize(
     'entity_type, model',
     [
-        (Entities.CATEGORY, pytest.lazy_fixture('category')),
-        (Entities.PRODUCT, pytest.lazy_fixture('product')),
+        (Entities.CATEGORY, pytest.lazy_fixture('saved_category_for_delete')),
+        (Entities.PRODUCT, pytest.lazy_fixture('saved_product_for_delete')),
         (Entities.USER, pytest.lazy_fixture('saved_user_client_for_delete')),
+        (Entities.BASKET, pytest.lazy_fixture('saved_basket_for_delete')),
     ],
 )
 def test__delete(entity_type, model) -> None:
