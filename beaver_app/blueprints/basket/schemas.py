@@ -1,7 +1,9 @@
+import marshmallow_dataclass
 from marshmallow import fields, Schema
 from marshmallow_sqlalchemy import auto_field, SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
 
+from beaver_app.blueprints.basket.classes import BasketProductData, BasketUpdate
 from beaver_app.blueprints.basket.models import BasketProduct
 from beaver_app.blueprints.basket.models.basket import Basket
 from beaver_app.blueprints.schemas import PaginationSchema
@@ -37,11 +39,5 @@ class BasketsListResponseSchema(Schema):
     pagination = fields.Nested(PaginationSchema())
 
 
-class BasketProductData(Schema):
-    product_id = fields.String()
-    quantity = fields.Float()
-
-
-class BasketUpdateSchema(Schema):
-    add = fields.List(fields.Nested(BasketProductData()))
-    remove = fields.List(fields.Nested(BasketProductData()))
+BasketProductDataSchema = marshmallow_dataclass.class_schema(BasketProductData)
+BasketUpdateSchema = marshmallow_dataclass.class_schema(BasketUpdate)

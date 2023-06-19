@@ -1,3 +1,4 @@
+from beaver_app.blueprints.basket.classes import BasketUpdate
 from beaver_app.blueprints.basket.enums import RecordTypeUpdateBasket
 from beaver_app.blueprints.basket.models import Basket, BasketProduct
 from beaver_app.blueprints.product.classes.product_update_row import ProductUpdateRow
@@ -6,17 +7,17 @@ from beaver_app.db.db_utils import save
 from beaver_app.db.db import db_session
 
 
-def update_products_in_basket(basket: Basket, products_data: dict) -> None:
+def update_products_in_basket(basket: Basket, products_data: BasketUpdate) -> None:
     handle_record_type(RecordTypeUpdateBasket.ADD, basket, products_data)
     handle_record_type(RecordTypeUpdateBasket.REMOVE, basket, products_data)
     db_session.commit()
 
 
-def handle_record_type(record_type: RecordTypeUpdateBasket, basket: Basket, products_data: dict) -> None:
-    if record_type.value not in products_data:
+def handle_record_type(record_type: RecordTypeUpdateBasket, basket: Basket, products_data: BasketUpdate) -> None:
+    if not hasattr(products_data, record_type.value) or getattr(products_data, record_type.value) is None:
         return
-    for product_row in products_data[record_type.value]:
-        product_update_row = ProductUpdateRow(product_row['product_id'], product_row['quantity'])
+    for product_row in getattr(products_data, record_type.value):
+        product_update_row = ProductUpdateRow(product_row.product_id, product_row.quantity)
         if record_type == RecordTypeUpdateBasket.ADD:
             add_product(basket, product_update_row)
         else:

@@ -2,6 +2,7 @@ from flask import abort
 from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from beaver_app.blueprints.basket.classes import BasketUpdate
 from beaver_app.blueprints.basket.schemas import BasketSchema, BasketsListResponseSchema, BasketUpdateSchema
 from beaver_app.blueprints.schemas import BaseGetListFilterSchema
 from beaver_app.blueprints.basket.utils import update_products_in_basket
@@ -42,9 +43,10 @@ class BasketView(MethodView):
     @basket_blueprint.arguments(BasketUpdateSchema, location='json')
     @basket_blueprint.response(201, BasketSchema)
     @jwt_required()
-    def put(self, products_data):
+    def put(self, products_data: BasketUpdate):
         user = get_by_id(Entities.USER, get_jwt_identity())
-        if user.basket is None:
+        if user is None or user.basket is None:
             abort(404)
+            return
         update_products_in_basket(user.basket, products_data)
         return user.basket
