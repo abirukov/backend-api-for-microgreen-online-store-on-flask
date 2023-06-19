@@ -60,6 +60,7 @@ def category_for_delete():
 def saved_category(category):
     save(category)
     yield category
+    Product.query.filter_by(category_id=category.id).delete()
     Category.query.filter_by(id=category.id).delete()
     db_session.commit()
 
@@ -96,6 +97,7 @@ def product_for_delete(saved_category):
 def saved_product(product):
     save(product)
     yield product
+    BasketProduct.query.filter_by(product_id=product.id).delete()
     Product.query.filter_by(id=product.id).delete()
     db_session.commit()
 
@@ -261,6 +263,7 @@ def basket_for_delete(saved_user_client_first):
 def saved_basket(basket):
     save(basket)
     yield basket
+    BasketProduct.query.filter_by(basket_id=basket.id).delete()
     Basket.query.filter_by(id=basket.id).delete()
     db_session.commit()
 

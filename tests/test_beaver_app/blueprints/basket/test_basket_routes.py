@@ -5,8 +5,7 @@ def test__basket_view__list_success(client, admin_auth_headers, basket_list):
         follow_redirects=True,
     )
     response_ids = [r_basket['id'] for r_basket in response.json['result']]
-    for basket in basket_list:
-        assert str(basket.id) in response_ids
+    assert response_ids == [str(b.id) for b in basket_list]
 
 
 def test__basket_view__list_fail(client, first_client_auth_headers):

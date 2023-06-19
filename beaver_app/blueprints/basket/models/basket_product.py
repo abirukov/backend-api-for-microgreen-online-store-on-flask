@@ -14,11 +14,11 @@ from beaver_app.blueprints.basket.models.basket import Basket
 class BasketProduct(Base, TimestampMixin):
     __tablename__ = 'basket_products'
     basket_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey('baskets.id', ondelete='CASCADE'),
+        ForeignKey('baskets.id'),
         primary_key=True,
     )
     product_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey('products.id', ondelete='CASCADE'),
+        ForeignKey('products.id'),
         primary_key=True,
     )
     quantity: Mapped[float]
@@ -26,10 +26,8 @@ class BasketProduct(Base, TimestampMixin):
     basket: Mapped['Basket'] = relationship(
         back_populates='basket_products',
         overlaps='baskets,products',
-        cascade='all',
     )
     product: Mapped['Product'] = relationship(
         back_populates='product_baskets',
         overlaps='baskets,products',
-        cascade='all',
     )
