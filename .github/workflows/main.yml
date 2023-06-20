@@ -61,6 +61,13 @@ jobs:
         run: pip install -r requirements.txt
       - name: Run migrations
         run: alembic upgrade head
+        env:
+          POSTGRES_DBNAME: postgres
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+
       - name: Run test
         run: pytest --lf -vv
 
