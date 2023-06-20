@@ -71,9 +71,9 @@ jobs:
       - name: Run test
         run: pytest --lf -vv
 
-        env:
-          POSTGRES_DBNAME: postgres
-          POSTGRES_HOST: postgres
-          POSTGRES_PORT: 5432
-          POSTGRES_USER: postgres
-          POSTGRES_PASSWORD: postgres
+    env:
+      POSTGRES_DBNAME: postgres
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
