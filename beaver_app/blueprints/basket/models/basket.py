@@ -20,5 +20,8 @@ class Basket(Base, TimestampMixin, IsDeletedMixin):
     user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True)
 
     products: Mapped[List['Product']] = relationship(secondary='basket_products', back_populates='baskets')
-    user: Mapped['User'] = relationship(back_populates='basket', cascade='delete')
-    basket_products: Mapped[List['BasketProduct']] = relationship(back_populates='basket', overlaps='products')
+    user: Mapped['User'] = relationship(back_populates='basket')
+    basket_products: Mapped[List['BasketProduct']] = relationship(
+        back_populates='basket',
+        overlaps='products',
+    )
