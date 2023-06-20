@@ -21,7 +21,7 @@ def test__users_view__list_no_auth(client):
     assert response.json == {'msg': 'Missing Authorization Header'}
 
 
-def test__users_view__create_success(client, saved_user_admin, admin_auth_headers):
+def test__users_view__create_success(client, user_admin, admin_auth_headers):
     user_data = {
         'first_name': 'test_create',
         'last_name': 'test_create',
@@ -31,7 +31,7 @@ def test__users_view__create_success(client, saved_user_admin, admin_auth_header
         'password': 'test_create',
         'tg_id': '52525225255',
         'tg_username': 'test_create',
-        'inviter_id': saved_user_admin.id,
+        'inviter_id': user_admin.id,
     }
     response = client.post(
         '/users',
@@ -72,7 +72,7 @@ def test__users_view__create_fail_no_required_field(client, admin_auth_headers):
     assert response.status_code == 422
 
 
-def test__users_view__create_fail_forbidden(client, saved_user_client_first, first_client_auth_headers):
+def test__users_view__create_fail_forbidden(client, user_client_first, first_client_auth_headers):
     user_data = {
         'first_name': 'test_create',
         'last_name': 'test_create',
@@ -82,7 +82,7 @@ def test__users_view__create_fail_forbidden(client, saved_user_client_first, fir
         'password': 'test_create',
         'tg_id': '52525225255',
         'tg_username': 'test_create',
-        'inviter_id': saved_user_client_first.id,
+        'inviter_id': user_client_first.id,
     }
     response = client.post(
         '/users',
@@ -93,13 +93,13 @@ def test__users_view__create_fail_forbidden(client, saved_user_client_first, fir
     assert response.status_code == 403
 
 
-def test__users_view__create_fail_duplicate_uniq_field(client, saved_user_admin, admin_auth_headers):
+def test__users_view__create_fail_duplicate_uniq_field(client, user_admin, admin_auth_headers):
     user_data = {
         'first_name': 'second',
         'last_name': 'second',
         'middle_name': 'second',
         'password': 'second',
-        'phone': saved_user_admin.phone,
+        'phone': user_admin.phone,
     }
     response = client.post(
         '/users',
@@ -110,39 +110,39 @@ def test__users_view__create_fail_duplicate_uniq_field(client, saved_user_admin,
     assert response.status_code == 400
 
 
-def test__users_view__get_success_admin(client, saved_user_client_first, admin_auth_headers):
+def test__users_view__get_success_admin(client, user_client_first, admin_auth_headers):
     response = client.get(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         headers=admin_auth_headers,
         follow_redirects=True,
     )
     response_dict = response.json
 
-    assert str(saved_user_client_first.id) == response_dict['id']
+    assert str(user_client_first.id) == response_dict['id']
 
 
-def test__users_view__get_fail_no_no_auth(client, saved_user_client_first):
+def test__users_view__get_fail_no_no_auth(client, user_client_first):
     response = client.get(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         follow_redirects=True,
     )
 
     assert response.status_code == 401
 
 
-def test__users_view__get_success_client(client, saved_user_client_first, first_client_auth_headers):
+def test__users_view__get_success_client(client, user_client_first, first_client_auth_headers):
     response = client.get(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         headers=first_client_auth_headers,
         follow_redirects=True,
     )
     response_dict = response.json
-    assert str(saved_user_client_first.id) == response_dict['id']
+    assert str(user_client_first.id) == response_dict['id']
 
 
-def test__users_view__get_fail_client(client, saved_user_client_second, first_client_auth_headers):
+def test__users_view__get_fail_client(client, user_client_second, first_client_auth_headers):
     response = client.get(
-        f'/users/{saved_user_client_second.id}',
+        f'/users/{user_client_second.id}',
         headers=first_client_auth_headers,
         follow_redirects=True,
     )
@@ -160,73 +160,73 @@ def test__users_view__get_fail_no_user(client, not_existing_uuid, admin_auth_hea
     assert response.status_code == 404
 
 
-def test__users_view__update_success_admin(client, saved_user_client_first, admin_auth_headers):
+def test__users_view__update_success_admin(client, user_client_first, admin_auth_headers):
     new_user_data = {
         'first_name': 'first_name_test',
-        'last_name': saved_user_client_first.last_name,
-        'middle_name': saved_user_client_first.middle_name,
-        'phone': saved_user_client_first.phone,
-        'email': saved_user_client_first.email,
-        'password': saved_user_client_first.password,
+        'last_name': user_client_first.last_name,
+        'middle_name': user_client_first.middle_name,
+        'phone': user_client_first.phone,
+        'email': user_client_first.email,
+        'password': user_client_first.password,
     }
     response = client.put(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         headers=admin_auth_headers,
         json=new_user_data,
         follow_redirects=True,
     )
     response_dict = response.json
 
-    assert str(saved_user_client_first.id) == response_dict['id']
+    assert str(user_client_first.id) == response_dict['id']
 
 
-def test__users_view__update_fail_no_auth(client, saved_user_client_first):
+def test__users_view__update_fail_no_auth(client, user_client_first):
     new_user_data = {
         'first_name': 'first_name_test',
-        'last_name': saved_user_client_first.last_name,
-        'middle_name': saved_user_client_first.middle_name,
-        'phone': saved_user_client_first.phone,
-        'email': saved_user_client_first.email,
-        'password': saved_user_client_first.password,
+        'last_name': user_client_first.last_name,
+        'middle_name': user_client_first.middle_name,
+        'phone': user_client_first.phone,
+        'email': user_client_first.email,
+        'password': user_client_first.password,
     }
     response = client.put(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         json=new_user_data,
         follow_redirects=True,
     )
     assert response.status_code == 401
 
 
-def test__users_view__update_success_client(client, saved_user_client_first, first_client_auth_headers):
+def test__users_view__update_success_client(client, user_client_first, first_client_auth_headers):
     new_user_data = {
         'first_name': 'first_name_test_client',
-        'last_name': saved_user_client_first.last_name,
-        'middle_name': saved_user_client_first.middle_name,
-        'phone': saved_user_client_first.phone,
-        'email': saved_user_client_first.email,
-        'password': saved_user_client_first.password,
+        'last_name': user_client_first.last_name,
+        'middle_name': user_client_first.middle_name,
+        'phone': user_client_first.phone,
+        'email': user_client_first.email,
+        'password': user_client_first.password,
     }
     response = client.put(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         headers=first_client_auth_headers,
         json=new_user_data,
         follow_redirects=True,
     )
     response_dict = response.json
-    assert str(saved_user_client_first.id) == response_dict['id']
+    assert str(user_client_first.id) == response_dict['id']
 
 
-def test__users_view__update_fail_client(client, saved_user_client_second, first_client_auth_headers):
+def test__users_view__update_fail_client(client, user_client_second, first_client_auth_headers):
     new_user_data = {
         'first_name': 'first_name_test_client',
-        'last_name': saved_user_client_second.last_name,
-        'middle_name': saved_user_client_second.middle_name,
-        'phone': saved_user_client_second.phone,
-        'email': saved_user_client_second.email,
-        'password': saved_user_client_second.password,
+        'last_name': user_client_second.last_name,
+        'middle_name': user_client_second.middle_name,
+        'phone': user_client_second.phone,
+        'email': user_client_second.email,
+        'password': user_client_second.password,
     }
     response = client.put(
-        f'/users/{saved_user_client_second.id}',
+        f'/users/{user_client_second.id}',
         headers=first_client_auth_headers,
         json=new_user_data,
         follow_redirects=True,
@@ -254,9 +254,9 @@ def test__users_view__update_fail_no_user(client, not_existing_uuid, admin_auth_
     assert response.status_code == 404
 
 
-def test__users_view__update_fail_no_field(client, saved_user_client_second, admin_auth_headers):
+def test__users_view__update_fail_no_field(client, user_client_second, admin_auth_headers):
     response = client.put(
-        f'/users/{saved_user_client_second.id}',
+        f'/users/{user_client_second.id}',
         headers=admin_auth_headers,
         follow_redirects=True,
     )
@@ -264,22 +264,22 @@ def test__users_view__update_fail_no_field(client, saved_user_client_second, adm
     assert response.status_code == 422
 
 
-def test__users_view__delete_success(client, saved_user_client_second, admin_auth_headers):
+def test__users_view__delete_success(client, user_client_second, admin_auth_headers):
     response = client.delete(
-        f'/users/{saved_user_client_second.id}',
+        f'/users/{user_client_second.id}',
         follow_redirects=True,
         headers=admin_auth_headers,
     )
     response_dict = response.json
-    user_in_db = get_by_id(Entities.USER, saved_user_client_second.id)
+    user_in_db = get_by_id(Entities.USER, user_client_second.id)
 
     assert response_dict == {}
     assert user_in_db.is_deleted is True
 
 
-def test__users_view__delete_fail_client_role(client, saved_user_client_first, first_client_auth_headers):
+def test__users_view__delete_fail_client_role(client, user_client_first, first_client_auth_headers):
     response = client.delete(
-        f'/users/{saved_user_client_first.id}',
+        f'/users/{user_client_first.id}',
         follow_redirects=True,
         headers=first_client_auth_headers,
     )
@@ -297,7 +297,7 @@ def test__users_view__delete_fail_no_user(client, not_existing_uuid, admin_auth_
     assert response.status_code == 404
 
 
-def test__users_view__register_success(client, saved_user_admin):
+def test__users_view__register_success(client, user_admin):
     user_data = {
         'first_name': 'test_register',
         'last_name': 'test_register',
@@ -307,7 +307,7 @@ def test__users_view__register_success(client, saved_user_admin):
         'password': 'test_register',
         'tg_id': '52525225255',
         'tg_username': 'test_register',
-        'inviter_id': saved_user_admin.id,
+        'inviter_id': user_admin.id,
     }
     response = client.post(
         '/users/register',
@@ -334,21 +334,21 @@ def test__user_register_view___fail_no_required_field(client):
     assert response.status_code == 422
 
 
-def test__user_register_view__fail_duplicate_uniq_field(client, saved_user_admin):
+def test__user_register_view__fail_duplicate_uniq_field(client, user_admin):
     user_data = {
         'first_name': 'second',
         'last_name': 'second',
         'middle_name': 'second',
         'password': 'second',
-        'phone': saved_user_admin.phone,
+        'phone': user_admin.phone,
     }
     response = client.post('/users/register', json=user_data, follow_redirects=True)
     assert response.status_code == 400
 
 
-def test__user_login_view__success(client, saved_user_admin, not_hash_admin_password):
+def test__user_login_view__success(client, user_admin, not_hash_admin_password):
     user_data = {
-        'email': saved_user_admin.email,
+        'email': user_admin.email,
         'password': not_hash_admin_password,
     }
     response = client.post(

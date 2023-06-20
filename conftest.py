@@ -47,75 +47,75 @@ def not_existing_uuid():
 
 
 @pytest.fixture()
-def category():
+def category_unsaved():
     return Category(title='Категория тест')
 
 
 @pytest.fixture()
-def category_for_delete():
+def category_for_delete_unsaved():
     return Category(title='Категория тест удаление')
 
 
 @pytest.fixture()
-def saved_category(category):
-    save(category)
-    yield category
-    Product.query.filter_by(category_id=category.id).delete()
-    Category.query.filter_by(id=category.id).delete()
+def category(category_unsaved):
+    save(category_unsaved)
+    yield category_unsaved
+    Product.query.filter_by(category_id=category_unsaved.id).delete()
+    Category.query.filter_by(id=category_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_category_for_delete(category_for_delete):
-    save(category_for_delete)
-    yield category_for_delete
-    Category.query.filter_by(id=category_for_delete.id).delete()
+def category_for_delete(category_for_delete_unsaved):
+    save(category_for_delete_unsaved)
+    yield category_for_delete_unsaved
+    Category.query.filter_by(id=category_for_delete_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def product(saved_category):
+def product_unsaved(category):
     return Product(
         title='Товар тест',
         price=120.0,
         description='Описание товара тест',
-        category_id=saved_category.id,
+        category_id=category.id,
     )
 
 
 @pytest.fixture()
-def product_for_delete(saved_category):
+def product_for_delete_unsaved(category):
     return Product(
         title='Товар удаление',
         price=120.0,
         description='Описание товар удаление',
-        category_id=saved_category.id,
+        category_id=category.id,
     )
 
 
 @pytest.fixture()
-def saved_product(product):
-    save(product)
-    yield product
-    BasketProduct.query.filter_by(product_id=product.id).delete()
-    Product.query.filter_by(id=product.id).delete()
+def product(product_unsaved):
+    save(product_unsaved)
+    yield product_unsaved
+    BasketProduct.query.filter_by(product_id=product_unsaved.id).delete()
+    Product.query.filter_by(id=product_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_product_for_delete(product_for_delete):
-    save(product_for_delete)
-    yield product_for_delete
+def product_for_delete(product_for_delete_unsaved):
+    save(product_for_delete_unsaved)
+    yield product_for_delete_unsaved
 
 
 @pytest.fixture()
-def category_list(saved_category, saved_category_for_delete):
-    return [saved_category, saved_category_for_delete]
+def category_list(category, category_for_delete):
+    return [category, category_for_delete]
 
 
 @pytest.fixture()
-def product_list(saved_product, saved_product_for_delete):
-    return [saved_product, saved_product_for_delete]
+def product_list(product, product_for_delete):
+    return [product, product_for_delete]
 
 
 @pytest.fixture()
@@ -124,7 +124,7 @@ def not_hash_admin_password():
 
 
 @pytest.fixture()
-def user_admin(not_hash_admin_password):
+def user_admin_unsaved(not_hash_admin_password):
     return User(
         first_name='admin',
         last_name='admin',
@@ -141,7 +141,7 @@ def user_admin(not_hash_admin_password):
 
 
 @pytest.fixture()
-def user_client_first(saved_user_admin):
+def user_client_first_unsaved(user_admin):
     return User(
         first_name='first',
         last_name='first',
@@ -152,12 +152,12 @@ def user_client_first(saved_user_admin):
         tg_id='1111111111',
         tg_username='firstfirst',
         personal_code='FT11',
-        inviter_id=saved_user_admin.id,
+        inviter_id=user_admin.id,
     )
 
 
 @pytest.fixture()
-def user_client_for_delete(saved_user_admin):
+def user_client_for_delete_unsaved(user_admin):
     return User(
         first_name='for_delete',
         last_name='for_delete',
@@ -168,12 +168,12 @@ def user_client_for_delete(saved_user_admin):
         tg_id='3111111111',
         tg_username='for_deletefor_delete',
         personal_code='FD11',
-        inviter_id=saved_user_admin.id,
+        inviter_id=user_admin.id,
     )
 
 
 @pytest.fixture()
-def user_client_second(saved_user_admin):
+def user_client_second_unsaved(user_admin):
     return User(
         first_name='second',
         last_name='second',
@@ -184,116 +184,116 @@ def user_client_second(saved_user_admin):
         tg_id='2111111111',
         tg_username='secondsecond',
         personal_code='FS11',
-        inviter_id=saved_user_admin.id,
+        inviter_id=user_admin.id,
     )
 
 
 @pytest.fixture()
-def saved_user_admin(user_admin):
-    user_admin.password = generate_password_hash(user_admin.password)
-    save(user_admin)
-    yield user_admin
-    User.query.filter_by(id=user_admin.id).delete()
+def user_admin(user_admin_unsaved):
+    user_admin_unsaved.password = generate_password_hash(user_admin_unsaved.password)
+    save(user_admin_unsaved)
+    yield user_admin_unsaved
+    User.query.filter_by(id=user_admin_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_user_client_first(user_client_first):
-    user_client_first.password = generate_password_hash(user_client_first.password)
-    save(user_client_first)
-    yield user_client_first
-    User.query.filter_by(id=user_client_first.id).delete()
+def user_client_first(user_client_first_unsaved):
+    user_client_first_unsaved.password = generate_password_hash(user_client_first_unsaved.password)
+    save(user_client_first_unsaved)
+    yield user_client_first_unsaved
+    User.query.filter_by(id=user_client_first_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_user_client_second(user_client_second):
-    user_client_second.password = generate_password_hash(user_client_second.password)
-    save(user_client_second)
-    yield user_client_second
-    User.query.filter_by(id=user_client_second.id).delete()
+def user_client_second(user_client_for_delete_unsaved):
+    user_client_for_delete_unsaved.password = generate_password_hash(user_client_for_delete_unsaved.password)
+    save(user_client_for_delete_unsaved)
+    yield user_client_for_delete_unsaved
+    User.query.filter_by(id=user_client_for_delete_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_user_client_for_delete(user_client_for_delete):
-    user_client_for_delete.password = generate_password_hash(user_client_for_delete.password)
-    save(user_client_for_delete)
-    yield user_client_for_delete
-    User.query.filter_by(id=user_client_for_delete.id).delete()
+def user_client_for_delete(user_client_for_delete_unsaved):
+    user_client_for_delete_unsaved.password = generate_password_hash(user_client_for_delete_unsaved.password)
+    save(user_client_for_delete_unsaved)
+    yield user_client_for_delete_unsaved
+    User.query.filter_by(id=user_client_for_delete_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
 def user_list(
-    saved_user_admin,
-    saved_user_client_first,
-    saved_user_client_second,
-    saved_user_client_for_delete,
+    user_admin,
+    user_client_first,
+    user_client_second,
+    user_client_for_delete,
 ):
     return [
-        saved_user_admin,
-        saved_user_client_first,
-        saved_user_client_second,
-        saved_user_client_for_delete,
+        user_admin,
+        user_client_first,
+        user_client_second,
+        user_client_for_delete,
     ]
 
 
 @pytest.fixture()
-def admin_auth_headers(saved_user_admin):
-    return {'Authorization': f'Bearer {saved_user_admin.create_token()}'}
+def admin_auth_headers(user_admin):
+    return {'Authorization': f'Bearer {user_admin.create_token()}'}
 
 
 @pytest.fixture()
-def first_client_auth_headers(saved_user_client_first):
-    return {'Authorization': f'Bearer {saved_user_client_first.create_token()}'}
+def first_client_auth_headers(user_client_first):
+    return {'Authorization': f'Bearer {user_client_first.create_token()}'}
 
 
 @pytest.fixture()
-def basket(saved_user_client_first):
-    return Basket(user_id=saved_user_client_first.id)
+def basket_unsaved(user_client_first):
+    return Basket(user_id=user_client_first.id)
 
 
 @pytest.fixture()
-def basket_for_delete(saved_user_client_first):
-    return Basket(user_id=saved_user_client_first.id)
+def basket_for_delete_unsaved(user_client_first):
+    return Basket(user_id=user_client_first.id)
 
 
 @pytest.fixture()
-def saved_basket(basket):
-    save(basket)
-    yield basket
-    BasketProduct.query.filter_by(basket_id=basket.id).delete()
-    Basket.query.filter_by(id=basket.id).delete()
+def basket(basket_unsaved):
+    save(basket_unsaved)
+    yield basket_unsaved
+    BasketProduct.query.filter_by(basket_id=basket_unsaved.id).delete()
+    Basket.query.filter_by(id=basket_unsaved.id).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def saved_basket_for_delete(basket_for_delete):
-    save(basket_for_delete)
-    yield basket_for_delete
+def basket_for_delete(basket_for_delete_unsaved):
+    save(basket_for_delete_unsaved)
+    yield basket_for_delete_unsaved
 
 
 @pytest.fixture()
-def basket_product(saved_basket, saved_product):
+def basket_product_unsaved(basket, product):
     return BasketProduct(
-        basket_id=saved_basket.id,
-        product_id=saved_product.id,
+        basket_id=basket.id,
+        product_id=product.id,
         quantity=3,
     )
 
 
 @pytest.fixture()
-def saved_basket_product(basket_product):
-    save(basket_product)
-    yield basket_product
+def basket_product(basket_product_unsaved):
+    save(basket_product_unsaved)
+    yield basket_product_unsaved
     BasketProduct.query.filter_by(
-        basket_id=basket_product.basket_id,
-        product_id=basket_product.basket_id,
+        basket_id=basket_product_unsaved.basket_id,
+        product_id=basket_product_unsaved.basket_id,
     ).delete()
     db_session.commit()
 
 
 @pytest.fixture()
-def basket_list(saved_basket):
-    return [saved_basket]
+def basket_list(basket):
+    return [basket]

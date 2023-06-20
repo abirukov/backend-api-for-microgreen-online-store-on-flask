@@ -2,10 +2,10 @@ from beaver_app.blueprints.user.utils import is_current_user, get_personal_code,
     is_personal_code_uniq
 
 
-def test_is_current_user_success(saved_user_admin):
+def test_is_current_user_success(user_admin):
     assert is_current_user(
-        str(saved_user_admin.id),
-        saved_user_admin.id,
+        str(user_admin.id),
+        user_admin.id,
     ) is True
 
 
@@ -23,5 +23,5 @@ def test_is_personal_code_uniq_true():
     assert is_personal_code_uniq('KK55') is True
 
 
-def test_is_personal_code_uniq_false(saved_user_admin):
-    assert is_personal_code_uniq(saved_user_admin.personal_code) is False
+def test_is_personal_code_uniq_false(user_admin):
+    assert is_personal_code_uniq(user_admin.personal_code) is False

@@ -1,12 +1,12 @@
 from beaver_app.blueprints.user.models import User
 
 
-def test__is_admin_by_id__true(saved_user_admin):
-    assert User.is_admin_by_id(saved_user_admin.id) is True
+def test__is_admin_by_id__true(user_admin):
+    assert User.is_admin_by_id(user_admin.id) is True
 
 
-def test__is_admin_by_id__false(saved_user_client_first):
-    assert User.is_admin_by_id(saved_user_client_first.id) is False
+def test__is_admin_by_id__false(user_client_first):
+    assert User.is_admin_by_id(user_client_first.id) is False
 
 
 def test__is_admin_by_id__false_no_user(not_existing_uuid):

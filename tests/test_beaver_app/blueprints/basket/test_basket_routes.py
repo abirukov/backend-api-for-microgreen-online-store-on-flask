@@ -17,7 +17,7 @@ def test__basket_view__list_fail(client, first_client_auth_headers):
     assert response.status_code == 403
 
 
-def test__basket_view__get_success(client, first_client_auth_headers, saved_basket):
+def test__basket_view__get_success(client, first_client_auth_headers, basket):
     response = client.get(
         '/baskets',
         headers=first_client_auth_headers,
@@ -25,7 +25,7 @@ def test__basket_view__get_success(client, first_client_auth_headers, saved_bask
     )
     response_dict = response.json
 
-    assert str(saved_basket.id) == response_dict['id']
+    assert str(basket.id) == response_dict['id']
 
 
 def test__basket_view__get_fail(client, admin_auth_headers):
@@ -41,15 +41,15 @@ def test__basket_view__get_fail(client, admin_auth_headers):
 def test__basket_view__update_success(
     client,
     first_client_auth_headers,
-    saved_product,
-    saved_basket, # noqa U100
+    product,
+    basket, # noqa U100
 ):
     new_product_data = {
         'add': [
-            {'product_id': saved_product.id, 'quantity': 5.0},
+            {'product_id': product.id, 'quantity': 5.0},
         ],
         'remove': [
-            {'product_id': saved_product.id, 'quantity': 3.0},
+            {'product_id': product.id, 'quantity': 3.0},
         ],
     }
     response = client.put(
@@ -63,7 +63,7 @@ def test__basket_view__update_success(
     assert response_dict['basket_products'][0]['quantity'] == 2.0
 
 
-def test__basket_view__update_fail_missing_field(client, first_client_auth_headers, saved_basket): # noqa U100
+def test__basket_view__update_fail_missing_field(client, first_client_auth_headers, basket): # noqa U100
     new_product_data = {'title': 'title'}
     response = client.put(
         '/baskets/',
@@ -75,13 +75,13 @@ def test__basket_view__update_fail_missing_field(client, first_client_auth_heade
     assert response.status_code == 422
 
 
-def test__basket_view__update_fail_no_found_basket(client, first_client_auth_headers, saved_product):
+def test__basket_view__update_fail_no_found_basket(client, first_client_auth_headers, product):
     new_product_data = {
         'add': [
-            {'product_id': saved_product.id, 'quantity': 5.0},
+            {'product_id': product.id, 'quantity': 5.0},
         ],
         'remove': [
-            {'product_id': saved_product.id, 'quantity': 3.0},
+            {'product_id': product.id, 'quantity': 3.0},
         ],
     }
     response = client.put(
