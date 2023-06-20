@@ -21,7 +21,7 @@ class BasketProduct(Base, TimestampMixin):
         ForeignKey('products.id'),
         primary_key=True,
     )
-    quantity: Mapped[float]
+    quantity: Mapped[int]
 
     basket: Mapped['Basket'] = relationship(
         back_populates='basket_products',
