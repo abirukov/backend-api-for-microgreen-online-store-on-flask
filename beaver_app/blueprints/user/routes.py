@@ -3,6 +3,7 @@ from flask.views import MethodView
 from flask_jwt_extended import jwt_required, get_jwt, get_jwt_identity
 from werkzeug.security import generate_password_hash
 
+from beaver_app.blueprints.basket.models import Basket
 from beaver_app.blueprints.user.models.token_blocklist import TokenBlocklist
 from beaver_app.blueprints.user.models.user import User
 from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema,\
@@ -42,7 +43,7 @@ class UsersView(MethodView):
         error_attrs = check_entity_by_unique_fields(Entities.USER, unique_attrs, user_data)
         if error_attrs:
             return response_unique_fields_error(error_attrs)
-        return save(
+        user = save(
             User(
                 first_name=user_data.first_name,
                 last_name=user_data.last_name,
@@ -56,6 +57,9 @@ class UsersView(MethodView):
                 inviter_id=user_data.inviter_id,
             ),
         )
+        save(Basket(user_id=user.id))
+
+        return user
 
 
 @user_blueprint.route('/<user_id>', methods=['GET', 'PUT', 'DELETE'])
@@ -104,7 +108,7 @@ class UserRegisterView(MethodView):
     @user_blueprint.arguments(UserSchema, location='json')
     @user_blueprint.response(201)
     def post(self, register_data):
-        error_attrs = check_entity_by_unique_fields(Entities.USER, User.get_uniq_fields(), register_data)
+        error_attrs = check_entity_by_unique_fields(Entities.USER, User.get_unique_fields(), register_data)
         if error_attrs:
             return response_unique_fields_error(error_attrs)
         user = save(
@@ -121,6 +125,7 @@ class UserRegisterView(MethodView):
                 inviter_id=register_data.inviter_id,
             ),
         )
+        user.basket = save(Basket(user_id=user.id))
         return jsonify(access_token=user.create_token())
 
 
