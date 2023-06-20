@@ -66,7 +66,7 @@ jobs:
         run: pytest --lf -vv
 
     env:
-      POSTGRES_DBNAME: postgres
+      POSTGRES_DBNAME: test
       POSTGRES_HOST: localhost
       POSTGRES_PORT: 5432
       POSTGRES_USER: postgres
