@@ -5,7 +5,7 @@ from dataclasses import dataclass
 @dataclass
 class BasketProductData:
     product_id: str
-    quantity: float
+    quantity: int
 
 
 @dataclass
