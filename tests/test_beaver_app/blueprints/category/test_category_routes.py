@@ -37,11 +37,11 @@ def test__categories_view__create_fail_empty(client):
     assert response.status_code == 422
 
 
-def test__categories_view__get_success(client, saved_category):
-    response = client.get(f'/categories/{saved_category.id}', follow_redirects=True)
+def test__categories_view__get_success(client, category):
+    response = client.get(f'/categories/{category.id}', follow_redirects=True)
     response_dict = response.json
 
-    assert str(saved_category.id) == response_dict['id']
+    assert str(category.id) == response_dict['id']
 
 
 def test__categories_view__get_fail(client, not_existing_uuid):
@@ -50,9 +50,9 @@ def test__categories_view__get_fail(client, not_existing_uuid):
     assert response.status_code == 404
 
 
-def test__categories_view__update_success(client, saved_category):
+def test__categories_view__update_success(client, category):
     new_category_data = {'title': 'title'}
-    response = client.put(f'/categories/{saved_category.id}', json=new_category_data, follow_redirects=True)
+    response = client.put(f'/categories/{category.id}', json=new_category_data, follow_redirects=True)
     response_dict = response.json
 
     assert response_dict['title'] == 'title'
@@ -65,10 +65,10 @@ def test__categories_view__update_fail(client, not_existing_uuid):
     assert response.status_code == 404
 
 
-def test__categories_view__delete_success(client, saved_category):
-    response = client.delete(f'/categories/{saved_category.id}', follow_redirects=True)
+def test__categories_view__delete_success(client, category):
+    response = client.delete(f'/categories/{category.id}', follow_redirects=True)
     response_dict = response.json
-    category_in_db = get_by_id(Entities.CATEGORY, saved_category.id)
+    category_in_db = get_by_id(Entities.CATEGORY, category.id)
 
     assert response_dict == {}
     assert category_in_db.is_deleted is True
