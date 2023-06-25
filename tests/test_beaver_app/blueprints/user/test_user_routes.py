@@ -1,5 +1,6 @@
 from uuid import UUID
 
+from beaver_app.blueprints.user.schemas import UsersGetListFilter
 from beaver_app.db.db_utils import get_by_id, delete, get_list
 from beaver_app.enums import Entities
 
@@ -318,7 +319,7 @@ def test__users_view__register_success(client, user_admin):
 
     assert response_dict['access_token'] is not None
 
-    user = get_list(Entities.USER, {'email': user_data['email']})['result'][0]
+    user = get_list(Entities.USER, UsersGetListFilter(email=user_data['email']))['result'][0]
     delete(user.basket)
     delete(user)
 

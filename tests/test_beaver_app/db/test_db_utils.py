@@ -1,5 +1,7 @@
 import pytest
 
+from beaver_app.blueprints.schemas import BaseGetListFilter
+from beaver_app.blueprints.user.schemas import UsersGetListFilter
 from beaver_app.db.db_utils import save, get_by_id, update, update_fields_by_id, get_list, \
     safe_delete, delete, get_search_params, get_query_params, query_process, is_entity_exist_by_field, \
     check_entity_by_unique_fields
@@ -90,7 +92,7 @@ def test__get_list(entity_type, models_list):
 
 
 def test__get_list__search(user_admin):
-    list_from_db = get_list(Entities.USER, {'search': 'admin'})['result']
+    list_from_db = get_list(Entities.USER, UsersGetListFilter(search='admin'))['result']
     assert [user_admin] == list_from_db
 
 
@@ -207,7 +209,7 @@ def test__get_search_params(fields_list, expected):
             },
         ),
         (
-            {'page_number': 2, 'page_size': 10},
+            BaseGetListFilter(page_number=2, page_size=10),
             {
                 'filter_params': [{'and': []}],
                 'sort_params': None,
@@ -216,12 +218,12 @@ def test__get_search_params(fields_list, expected):
             },
         ),
         (
-            {
-                'is_deleted': True,
-                'created_at_before': '2023-06-05T15:00:00',
-                'created_at_after': '2023-02-05T15:00:00',
-                'search': 'test',
-            },
+            BaseGetListFilter(
+                is_deleted=True,
+                created_at_before='2023-06-05T15:00:00',
+                created_at_after='2023-02-05T15:00:00',
+                search='test',
+            ),
             {
                 'filter_params': [{'and': [
                     {
@@ -246,7 +248,7 @@ def test__get_search_params(fields_list, expected):
             },
         ),
         (
-            {'sort_by_created_at': 'asc'},
+            BaseGetListFilter(sort_by_created_at='asc'),
             {
                 'filter_params': [{'and': []}],
                 'sort_params': [{
