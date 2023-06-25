@@ -29,3 +29,7 @@ class Order(Base, TimestampMixin, IsDeletedMixin):
         back_populates='order',
         overlaps='products',
     )
+
+    @staticmethod
+    def get_search_fields() -> list:
+        return ['comment', 'address', 'status']
