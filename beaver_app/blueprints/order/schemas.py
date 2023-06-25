@@ -1,8 +1,10 @@
+from marshmallow import Schema, fields, validate
 from marshmallow_sqlalchemy import auto_field, SQLAlchemyAutoSchema
 from marshmallow_sqlalchemy.fields import Nested
 
 from beaver_app.blueprints.order.models import OrderProduct
 from beaver_app.blueprints.order.models.order import Order
+from beaver_app.blueprints.schemas import BaseGetListFilterSchema, PaginationSchema
 from beaver_app.db.db import db_session
 
 
@@ -28,3 +30,17 @@ class OrderSchema(SQLAlchemyAutoSchema):
         include_fk = True
 
     order_products = Nested(OrderProductSchema, many=True)
+
+
+class OrdersGetListFilterSchema(BaseGetListFilterSchema):
+    user_id = fields.String()
+    total = fields.Float()
+    total_less = fields.Float()
+    total_more = fields.Float()
+    status = fields.String()
+    sort_by_status = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
+
+
+class OrdersListResponseSchema(Schema):
+    result = fields.List(fields.Nested(OrderSchema()))
+    pagination = fields.Nested(PaginationSchema())
