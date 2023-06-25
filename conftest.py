@@ -301,8 +301,25 @@ def basket_list(basket):
 
 
 @pytest.fixture()
-def order_unsaved(user_client_first):
-    return Order(user_id=user_client_first.id)
+def order_first_unsaved(user_client_first):
+    return Order(
+        user_id=user_client_first.id,
+        status='new',
+        address='test',
+        comment='test comment',
+        total=1000.0,
+    )
+
+
+@pytest.fixture()
+def order_second_unsaved(user_client_second):
+    return Order(
+        user_id=user_client_second.id,
+        status='new',
+        address='test2',
+        comment='test2 comment',
+        total=2000.0,
+    )
 
 
 @pytest.fixture()
@@ -311,11 +328,20 @@ def order_for_delete_unsaved(user_client_first):
 
 
 @pytest.fixture()
-def order(order_unsaved):
-    save(order_unsaved)
-    yield order_unsaved
-    OrderProduct.query.filter_by(order_id=order_unsaved.id).delete()
-    Order.query.filter_by(id=order_unsaved.id).delete()
+def order_first(order_first_unsaved):
+    save(order_first_unsaved)
+    yield order_first_unsaved
+    OrderProduct.query.filter_by(order_id=order_first_unsaved.id).delete()
+    Order.query.filter_by(id=order_first_unsaved.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def order_second(order_second_unsaved):
+    save(order_second_unsaved)
+    yield order_second_unsaved
+    OrderProduct.query.filter_by(order_id=order_second_unsaved.id).delete()
+    Order.query.filter_by(id=order_second_unsaved.id).delete()
     db_session.commit()
 
 
@@ -326,9 +352,9 @@ def order_for_delete(order_for_delete_unsaved):
 
 
 @pytest.fixture()
-def order_product_unsaved(order, product):
+def order_product_unsaved(order_first, product):
     return OrderProduct(
-        order_id=order.id,
+        order_id=order_first.id,
         product_id=product.id,
         quantity=3,
     )
@@ -346,5 +372,5 @@ def order_product(order_product_unsaved):
 
 
 @pytest.fixture()
-def order_list(order):
-    return [order]
+def order_list(order_first, order_second):
+    return [order_first, order_second]
