@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash
 from beaver_app.app import create_app
 from beaver_app.blueprints.basket.models import Basket, BasketProduct
 from beaver_app.blueprints.category.models import Category
+from beaver_app.blueprints.order.models import OrderProduct, Order
 from beaver_app.blueprints.product.models import Product
 from beaver_app.blueprints.user.models import User
 from beaver_app.db.db import db_session
@@ -289,7 +290,7 @@ def basket_product(basket_product_unsaved):
     yield basket_product_unsaved
     BasketProduct.query.filter_by(
         basket_id=basket_product_unsaved.basket_id,
-        product_id=basket_product_unsaved.basket_id,
+        product_id=basket_product_unsaved.product_id,
     ).delete()
     db_session.commit()
 
@@ -297,3 +298,53 @@ def basket_product(basket_product_unsaved):
 @pytest.fixture()
 def basket_list(basket):
     return [basket]
+
+
+@pytest.fixture()
+def order_unsaved(user_client_first):
+    return Order(user_id=user_client_first.id)
+
+
+@pytest.fixture()
+def order_for_delete_unsaved(user_client_first):
+    return Order(user_id=user_client_first.id)
+
+
+@pytest.fixture()
+def order(order_unsaved):
+    save(order_unsaved)
+    yield order_unsaved
+    OrderProduct.query.filter_by(order_id=order_unsaved.id).delete()
+    Order.query.filter_by(id=order_unsaved.id).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def order_for_delete(order_for_delete_unsaved):
+    save(order_for_delete_unsaved)
+    yield order_for_delete_unsaved
+
+
+@pytest.fixture()
+def order_product_unsaved(order, product):
+    return OrderProduct(
+        order_id=order.id,
+        product_id=product.id,
+        quantity=3,
+    )
+
+
+@pytest.fixture()
+def order_product(order_product_unsaved):
+    save(order_product_unsaved)
+    yield order_product_unsaved
+    OrderProduct.query.filter_by(
+        order_id=order_product_unsaved.order_id,
+        product_id=order_product_unsaved.product_id,
+    ).delete()
+    db_session.commit()
+
+
+@pytest.fixture()
+def order_list(order):
+    return [order]
