@@ -2,13 +2,14 @@ import uuid
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-
+from typing import TYPE_CHECKING
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin
 
 
-from beaver_app.blueprints.product.models.product import Product
-from beaver_app.blueprints.order.models.order import Order
+if TYPE_CHECKING:
+    from beaver_app.blueprints.product.models.product import Product
+    from beaver_app.blueprints.order.models.order import Order
 
 
 class OrderProduct(Base, TimestampMixin):

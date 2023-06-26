@@ -1,4 +1,5 @@
 import uuid
+from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
@@ -7,8 +8,9 @@ from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin
 
 
-from beaver_app.blueprints.product.models.product import Product
-from beaver_app.blueprints.basket.models.basket import Basket
+if TYPE_CHECKING:
+    from beaver_app.blueprints.product.models.product import Product
+    from beaver_app.blueprints.basket.models.basket import Basket
 
 
 class BasketProduct(Base, TimestampMixin):
