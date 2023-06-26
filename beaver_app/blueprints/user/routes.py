@@ -134,7 +134,7 @@ class UserLoginView(MethodView):
     @user_blueprint.arguments(UserLoginSchema, location='json')
     @user_blueprint.response(200)
     def post(self, login_data):
-        user = User.authenticate_by_mail(login_data['email'], login_data['password'])
+        user = User.authenticate_by_mail(login_data.email, login_data.password)
         if user is not None:
             return jsonify(access_token=user.create_token())
         return abort(400)

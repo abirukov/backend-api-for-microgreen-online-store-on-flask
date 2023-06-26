@@ -1,6 +1,9 @@
+from dataclasses import dataclass, field
+
+import marshmallow_dataclass
 from marshmallow import fields, Schema, validate
 
-from beaver_app.blueprints.schemas import BaseSchema, PaginationSchema, BaseGetListFilterSchema
+from beaver_app.blueprints.schemas import BaseSchema, PaginationSchema, BaseGetListFilter
 from beaver_app.blueprints.user.models.user import User
 
 
@@ -12,21 +15,37 @@ class UserSchema(BaseSchema):
         include_fk = True
 
 
-class UsersGetListFilterSchema(BaseGetListFilterSchema):
-    first_name = fields.String()
-    last_name = fields.String()
-    middle_name = fields.String()
-    phone = fields.String()
-    email = fields.String()
-    tg_id = fields.String()
-    tg_username = fields.String()
-    personal_code = fields.String()
-    is_admin = fields.Boolean()
-    inviter_id = fields.String()
-    sort_by_first_name = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
-    sort_by_last_name = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
-    sort_by_middle_name = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
-    sort_by_inviter_id = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
+@dataclass
+class UsersGetListFilter(BaseGetListFilter):
+    first_name: str | None = None
+    last_name: str | None = None
+    middle_name: str | None = None
+    phone: str | None = None
+    email: str | None = None
+    tg_id: str | None = None
+    tg_username: str | None = None
+    personal_code: str | None = None
+    is_admin: bool | None = None
+    inviter_id: str | None = None
+    sort_by_first_name: str | None = field(
+        default=None,
+        metadata={'validate': validate.OneOf(('asc', 'desc'))},
+    )
+    sort_by_last_name: str | None = field(
+        default=None,
+        metadata={'validate': validate.OneOf(('asc', 'desc'))},
+    )
+    sort_by_middle_name: str | None = field(
+        default=None,
+        metadata={'validate': validate.OneOf(('asc', 'desc'))},
+    )
+    sort_by_inviter_id: str | None = field(
+        default=None,
+        metadata={'validate': validate.OneOf(('asc', 'desc'))},
+    )
+
+
+UsersGetListFilterSchema = marshmallow_dataclass.class_schema(UsersGetListFilter)
 
 
 class UsersListResponseSchema(Schema):
@@ -34,6 +53,10 @@ class UsersListResponseSchema(Schema):
     pagination = fields.Nested(PaginationSchema())
 
 
-class UserLoginSchema(Schema):
-    email = fields.String(required=True)
-    password = fields.String(required=True)
+@dataclass
+class UserLogin:
+    email: str
+    password: str
+
+
+UserLoginSchema = marshmallow_dataclass.class_schema(UserLogin)

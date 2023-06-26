@@ -1,7 +1,10 @@
+from dataclasses import field, dataclass
+
+import marshmallow_dataclass
 from marshmallow import Schema, fields, validate
 
 from beaver_app.blueprints.product.models import Product
-from beaver_app.blueprints.schemas import BaseSchema, PaginationSchema, BaseGetListFilterSchema
+from beaver_app.blueprints.schemas import BaseSchema, PaginationSchema, BaseGetListFilter
 
 
 class ProductSchema(BaseSchema):
@@ -12,14 +15,21 @@ class ProductSchema(BaseSchema):
         include_fk = True
 
 
-class ProductsGetListFilterSchema(BaseGetListFilterSchema):
-    title = fields.String()
-    price = fields.Float()
-    description = fields.String()
-    category_id = fields.String()
-    price_less = fields.Float()
-    price_more = fields.Float()
-    sort_by_title = fields.String(validate=validate.OneOf(('asc', 'desc')), allow_none=True)
+@dataclass
+class ProductsGetListFilter(BaseGetListFilter):
+    title: str | None = None
+    price: float | None = None
+    description: str | None = None
+    category_id: str | None = None
+    price_less: float | None = None
+    price_more: float | None = None
+    sort_by_title: str | None = field(
+        default=None,
+        metadata={'validate': validate.OneOf(('asc', 'desc'))},
+    )
+
+
+ProductsGetListFilterSchema = marshmallow_dataclass.class_schema(BaseGetListFilter)
 
 
 class ProductsListResponseSchema(Schema):
