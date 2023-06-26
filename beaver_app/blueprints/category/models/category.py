@@ -20,5 +20,5 @@ class Category(Base, TimestampMixin, IsDeletedMixin):
     products: Mapped[List['Product']] = relationship(back_populates='category')
 
     @staticmethod
-    def get_search_params() -> list:
+    def get_search_fields() -> list:
         return ['title']
