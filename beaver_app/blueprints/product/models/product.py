@@ -1,5 +1,5 @@
 import uuid
-from typing import TYPE_CHECKING, List
+from typing import List, TYPE_CHECKING
 
 from sqlalchemy import String, Float, Text, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
@@ -9,11 +9,12 @@ from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 from beaver_app.blueprints.category.models.category import Category
 
+from beaver_app.blueprints.order.models.order_product import OrderProduct
+from beaver_app.blueprints.basket.models.basket_product import BasketProduct
+
 if TYPE_CHECKING:
-    from beaver_app.blueprints.basket.models.basket import Basket
     from beaver_app.blueprints.order.models.order import Order
-    from beaver_app.blueprints.basket.models.basket_product import BasketProduct
-    from beaver_app.blueprints.order.models.order_product import OrderProduct
+    from beaver_app.blueprints.basket.models.basket import Basket
 
 
 class Product(Base, TimestampMixin, IsDeletedMixin):
@@ -37,9 +38,9 @@ class Product(Base, TimestampMixin, IsDeletedMixin):
     product_baskets: Mapped[List['BasketProduct']] = relationship(back_populates='product', overlaps='baskets,products')
 
     orders: Mapped[List['Order']] = relationship(
-        secondary='basket_products',
+        secondary='order_products',
         back_populates='products',
-        overlaps='basket_products',
+        overlaps='order_products',
     )
     product_orders: Mapped[List['OrderProduct']] = relationship(back_populates='product', overlaps='orders,products')
 
