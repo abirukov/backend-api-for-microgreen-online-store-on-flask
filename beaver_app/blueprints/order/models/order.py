@@ -24,7 +24,7 @@ class Order(Base, TimestampMixin, IsDeletedMixin):
     total: Mapped[float] = mapped_column(Float())
 
     products: Mapped[List['Product']] = relationship(secondary='order_products', back_populates='orders')
-    user: Mapped['User'] = relationship(back_populates='order')
+    user: Mapped['User'] = relationship(back_populates='orders')
     order_products: Mapped[List['OrderProduct']] = relationship(
         back_populates='order',
         overlaps='products',

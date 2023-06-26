@@ -11,9 +11,11 @@ from beaver_app.db.mixin import TimestampMixin, IsDeletedMixin
 
 from flask_jwt_extended import create_access_token
 from datetime import timedelta
-from typing import TypeVar, TYPE_CHECKING
+from typing import TypeVar, TYPE_CHECKING, List
+
 if TYPE_CHECKING:
     from beaver_app.blueprints.basket.models.basket import Basket
+    from beaver_app.blueprints.order.models.order import Order
 
 TypingUser = TypeVar('TypingUser', bound='User')
 
@@ -38,6 +40,7 @@ class User(Base, TimestampMixin, IsDeletedMixin):
     )
 
     basket: Mapped['Basket'] = relationship(back_populates='user')
+    orders: Mapped[List['Order']] = relationship(back_populates='user')
 
     def create_token(self) -> str:
         token = create_access_token(
