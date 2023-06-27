@@ -29,10 +29,9 @@ def test__orders_view__create_success(client, first_client_auth_headers, basket_
         '/orders',
         json=order_data,
         headers=first_client_auth_headers,
-        follow_redirects=True
+        follow_redirects=True,
     )
     response_dict = response.json
-    print(f'111111{response.json}')
 
     assert order_data['address'] == response_dict['address']
     assert basket_product.quantity * basket_product.product.price == response_dict['total']
