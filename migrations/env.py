@@ -23,6 +23,7 @@ from beaver_app.blueprints.category.models import *
 from beaver_app.blueprints.product.models import *
 from beaver_app.blueprints.user.models import *
 from beaver_app.blueprints.basket.models import *
+from beaver_app.blueprints.order.models import *
 target_metadata = Base.metadata
 # target_metadata = None
 

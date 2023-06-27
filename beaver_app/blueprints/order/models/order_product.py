@@ -1,22 +1,21 @@
 import uuid
-from typing import TYPE_CHECKING
 
 from sqlalchemy import ForeignKey
 from sqlalchemy.orm import relationship, Mapped, mapped_column
-
+from typing import TYPE_CHECKING
 from beaver_app.db.db import Base
 from beaver_app.db.mixin import TimestampMixin
 
 
 if TYPE_CHECKING:
     from beaver_app.blueprints.product.models.product import Product
-    from beaver_app.blueprints.basket.models.basket import Basket
+    from beaver_app.blueprints.order.models.order import Order
 
 
-class BasketProduct(Base, TimestampMixin):
-    __tablename__ = 'basket_products'
-    basket_id: Mapped[uuid.UUID] = mapped_column(
-        ForeignKey('baskets.id'),
+class OrderProduct(Base, TimestampMixin):
+    __tablename__ = 'order_products'
+    order_id: Mapped[uuid.UUID] = mapped_column(
+        ForeignKey('orders.id'),
         primary_key=True,
     )
     product_id: Mapped[uuid.UUID] = mapped_column(
@@ -25,11 +24,11 @@ class BasketProduct(Base, TimestampMixin):
     )
     quantity: Mapped[int]
 
-    basket: Mapped['Basket'] = relationship(
-        back_populates='basket_products',
-        overlaps='baskets,products',
+    order: Mapped['Order'] = relationship(
+        back_populates='order_products',
+        overlaps='orders,products',
     )
     product: Mapped['Product'] = relationship(
-        back_populates='product_baskets',
-        overlaps='baskets,products',
+        back_populates='product_orders',
+        overlaps='orders,products',
     )

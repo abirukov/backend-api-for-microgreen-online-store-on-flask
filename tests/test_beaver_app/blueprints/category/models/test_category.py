@@ -1,8 +1,5 @@
-from beaver_app.blueprints.product.models import Product
+from beaver_app.blueprints.category.models import Category
 
 
-def test__product_get_search_params():
-    assert Product.get_search_fields() == [
-        'title',
-        'description',
-    ]
+def test__category_get_search_fields():
+    assert Category.get_search_fields() == ['title']
