@@ -23,6 +23,7 @@ class OrderProduct(Base, TimestampMixin):
         primary_key=True,
     )
     quantity: Mapped[int]
+    unit_price: Mapped[float]
 
     order: Mapped['Order'] = relationship(
         back_populates='order_products',
