@@ -27,6 +27,7 @@ class OrderProductSchema(SQLAlchemyAutoSchema):
 
 class OrderSchema(SQLAlchemyAutoSchema):
     class Meta:
+        sqla_session = db_session
         model = Order
         include_relationships = True
         load_instance = True
