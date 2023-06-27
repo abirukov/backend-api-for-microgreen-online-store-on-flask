@@ -4,7 +4,7 @@ from beaver_app.db.db_utils import save, update
 
 
 def handle_basket(order: Order, basket: Basket) -> None:
-    total = 0
+    total = 0.0
     for basket_product in basket.basket_products:
         total += basket_product.quantity * basket_product.product.price
         save(OrderProduct(
