@@ -20,7 +20,7 @@ def test__orders_view__list_no_auth(client):
     assert response.json == {'msg': 'Missing Authorization Header'}
 
 
-def test__orders_view__create_success(client, first_client_auth_headers, basket_product):
+def test__orders_view__create_success(client, first_client_auth_headers, basket_product):  # noqa: U100
     order_data = {
         'address': 'Адрес тест',
         'comment': 'Коммент тест',
@@ -32,18 +32,18 @@ def test__orders_view__create_success(client, first_client_auth_headers, basket_
         follow_redirects=True,
     )
     response_dict = response.json
+    order = get_by_id(Entities.ORDER, response_dict['id'])
+    order_product = order.order_products[0]
 
     assert order_data['address'] == response_dict['address']
-    assert basket_product.quantity * basket_product.product.price == response_dict['total']
-    assert basket_product.quantity == response_dict['order_products'][0]['quantity']
-    assert basket_product.product.price == response_dict['order_products'][0]['unit_price']
+    assert order_product.quantity * order_product.product.price == response_dict['total']
+    assert order_product.quantity == response_dict['order_products'][0]['quantity']
+    assert order_product.product.price == response_dict['order_products'][0]['unit_price']
 
     OrderProduct.query.filter_by(
         order_id=response_dict['id'],
-        product_id=basket_product.product.id,
     ).delete()
     db_session.commit()
-    order = get_by_id(Entities.ORDER, response_dict['id'])
     delete(order)
 
 
