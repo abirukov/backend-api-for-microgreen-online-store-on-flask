@@ -4,11 +4,11 @@ from flask_smorest import Api
 from logging.config import dictConfig
 
 from beaver_app.blueprints.user.models import TokenBlocklist
-from beaver_app.blueprints.product.routes import product_blueprint
-from beaver_app.blueprints.category.routes import category_blueprint
-from beaver_app.blueprints.basket.routes import basket_blueprint
-from beaver_app.blueprints.order.routes import order_blueprint
-from beaver_app.blueprints.user.routes import user_blueprint
+from beaver_app.blueprints.product.views import product_blueprint
+from beaver_app.blueprints.category.views import category_blueprint
+from beaver_app.blueprints.basket.views import basket_blueprint
+from beaver_app.blueprints.order.views import order_blueprint
+from beaver_app.blueprints.user.views import user_blueprint
 from beaver_app.config import get_config
 from beaver_app.db.db import db_session
 

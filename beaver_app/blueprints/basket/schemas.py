@@ -26,6 +26,7 @@ class BasketProductSchema(SQLAlchemyAutoSchema):
 
 class BasketSchema(SQLAlchemyAutoSchema):
     class Meta:
+        sqla_session = db_session
         model = Basket
         include_relationships = True
         load_instance = True

@@ -17,11 +17,11 @@ if TYPE_CHECKING:
 class Order(Base, TimestampMixin, IsDeletedMixin):
     __tablename__ = 'orders'
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True)
-    status: Mapped[str] = mapped_column(String())
-    address: Mapped[str] = mapped_column(Text())
-    comment: Mapped[str] = mapped_column(Text())
-    total: Mapped[float] = mapped_column(Float())
+    user_id: Mapped[uuid.UUID] = mapped_column(ForeignKey('users.id'), index=True, nullable=True)
+    status: Mapped[str] = mapped_column(String(), nullable=True)
+    address: Mapped[str] = mapped_column(Text(), nullable=True)
+    comment: Mapped[str] = mapped_column(Text(), nullable=True)
+    total: Mapped[float] = mapped_column(Float(), nullable=True)
 
     products: Mapped[List['Product']] = relationship(secondary='order_products', back_populates='orders')
     user: Mapped['User'] = relationship(back_populates='orders')

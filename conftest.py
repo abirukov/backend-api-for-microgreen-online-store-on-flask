@@ -286,11 +286,13 @@ def basket_product_unsaved(basket, product):
 
 @pytest.fixture()
 def basket_product(basket_product_unsaved):
+    basket_id = basket_product_unsaved.basket_id
+    product_id = basket_product_unsaved.product_id
     save(basket_product_unsaved)
     yield basket_product_unsaved
     BasketProduct.query.filter_by(
-        basket_id=basket_product_unsaved.basket_id,
-        product_id=basket_product_unsaved.product_id,
+        basket_id=basket_id,
+        product_id=product_id,
     ).delete()
     db_session.commit()
 
