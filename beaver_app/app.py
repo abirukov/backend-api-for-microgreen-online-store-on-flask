@@ -1,4 +1,5 @@
 from flask import Flask
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from flask_smorest import Api
 from logging.config import dictConfig
@@ -31,6 +32,8 @@ def create_app() -> Flask:
     })
     app = Flask(__name__)
     app.config.update(get_config())
+    CORS(app, resorces={r'/*': {'origins': '*'}})
+    app.config['CORS_HEADER'] = 'Content-Type'
     api = Api(app)
     api.register_blueprint(category_blueprint)
     api.register_blueprint(user_blueprint)
