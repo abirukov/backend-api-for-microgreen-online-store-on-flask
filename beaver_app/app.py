@@ -32,7 +32,7 @@ def create_app() -> Flask:
     })
     app = Flask(__name__)
     app.config.update(get_config())
-    CORS(app, resorces={r'/*': {'origins': '*'}})
+    CORS(app, supports_credentials=True)
     app.config['CORS_HEADER'] = 'Content-Type'
     api = Api(app)
     api.register_blueprint(category_blueprint)
