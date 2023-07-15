@@ -12,3 +12,4 @@ repos:
     hooks:
     - id: mypy
       exclude: 'node_modules|env|venv|tests|migrations'
+      additional_dependencies: ["types-requests==2.31.0.1"]
