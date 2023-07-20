@@ -70,6 +70,9 @@ jobs:
         with:
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./pytest.xml
+      - name: Echo min coverage
+        run: |
+          echo "Coverage Percantage - ${{ steps.coverageComment.outputs.coverage }}"
       - name: Check min coverage
         if: steps.coverageComment.outputs.coverage < 100
         run: exit 1
