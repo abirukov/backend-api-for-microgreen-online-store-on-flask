@@ -81,7 +81,7 @@ jobs:
         run: |
           import sys
           percent_in_string = '''${{ steps.coverageComment.outputs.coverage }}'''
-          percent = int(percent_in_string.replace('%', '')
+          percent = int(percent_in_string.replace('%', ''))
           if percent < 100:
             sys.exit(1)
 
