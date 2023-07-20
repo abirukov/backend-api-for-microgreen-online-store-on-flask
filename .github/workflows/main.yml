@@ -76,6 +76,14 @@ jobs:
       - name: Check min coverage
         if: steps.coverageComment.outputs.coverage < 100
         run: exit 1
+      - name: Check if person has accepted and signed CLA
+        shell: python
+        run: |
+          import sys
+          percent_in_string = '''${{ steps.coverageComment.outputs.coverage }}'''
+          percent = int(percent_in_string.replace('%', '')
+          if percent < 100:
+            sys.exit(1)
 
 
     env:
