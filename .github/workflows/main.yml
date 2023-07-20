@@ -63,7 +63,7 @@ jobs:
       - name: Run migrations
         run: alembic upgrade head
       - name: Run test
-        run: pytest -vv --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=beaver_app --cov-fail-under=80 . | tee pytest-coverage.txt
+        run: pytest -vv --junitxml=pytest.xml --cov-report=term-missing:skip-covered --cov=beaver_app --cov-branch --cov-fail-under=80 . | tee pytest-coverage.txt
       - name: Pytest coverage comment
         uses: MishaKav/pytest-coverage-comment@main
         with:
