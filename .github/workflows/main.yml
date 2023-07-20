@@ -63,12 +63,16 @@ jobs:
       - name: Run migrations
         run: alembic upgrade head
       - name: Run test
-        run: pytest -vv --junitxml=pytest.xml --cov=beaver_app --cov-branch --cov-fail-under=100 . | tee pytest-coverage.txt
+        run: python -m pytest -vv --junitxml=pytest.xml --cov=beaver_app --cov-branch --cov-fail-under=100 . | tee pytest-coverage.txt
       - name: Pytest coverage comment
+        id: coverageComment
         uses: MishaKav/pytest-coverage-comment@main
         with:
           pytest-coverage-path: ./pytest-coverage.txt
           junitxml-path: ./pytest.xml
+      - name: Check min coverage
+        if: steps.coverageComment.outputs.coverage < 100
+        run: exit 1
 
 
     env:
