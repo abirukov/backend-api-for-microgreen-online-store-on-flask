@@ -6,8 +6,8 @@ from werkzeug.security import generate_password_hash
 from beaver_app.blueprints.basket.models import Basket
 from beaver_app.blueprints.user.models.token_blocklist import TokenBlocklist
 from beaver_app.blueprints.user.models.user import User
-from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema,\
-    UsersListResponseSchema, UserLoginSchema
+from beaver_app.blueprints.user.schemas import UserSchema, UsersGetListFilterSchema, \
+    UsersListResponseSchema, UserLoginSchema, UserDataWithTokenSchema
 from beaver_app.blueprints.user.utils import generate_personal_code, is_current_user
 from beaver_app.blueprints.utils import response_unique_fields_error
 from beaver_app.db.db_utils import save, get_list, get_by_id, update, safe_delete,\
@@ -106,7 +106,7 @@ class UserView(MethodView):
 @user_blueprint.route('/register', methods=['POST'])
 class UserRegisterView(MethodView):
     @user_blueprint.arguments(UserSchema, location='json')
-    @user_blueprint.response(201)
+    @user_blueprint.response(201, UserDataWithTokenSchema)
     def post(self, register_data):
         error_attrs = check_entity_by_unique_fields(Entities.USER, User.get_unique_fields(), register_data)
         if error_attrs:
@@ -126,17 +126,23 @@ class UserRegisterView(MethodView):
             ),
         )
         user.basket = save(Basket(user_id=user.id))
-        return jsonify(access_token=user.create_token())
+        return {
+            'user_data': user,
+            'access_token': user.create_token(),
+        }
 
 
 @user_blueprint.route('/login', methods=['POST'])
 class UserLoginView(MethodView):
     @user_blueprint.arguments(UserLoginSchema, location='json')
-    @user_blueprint.response(200)
+    @user_blueprint.response(200, UserDataWithTokenSchema)
     def post(self, login_data):
         user = User.authenticate_by_mail(login_data.email, login_data.password)
         if user is not None:
-            return jsonify(access_token=user.create_token())
+            return {
+                'user_data': user,
+                'access_token': user.create_token(),
+            }
         return abort(400)
 
 

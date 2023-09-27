@@ -9,6 +9,7 @@ from beaver_app.blueprints.order.utils import move_items_from_basket_to_order
 from beaver_app.blueprints.user.models import User
 from beaver_app.db.db_utils import get_list, save, get_by_id, update
 from beaver_app.enums import Entities
+from beaver_app.notifications.telegram import notify_about_order
 
 order_blueprint = Blueprint('orders', 'orders', url_prefix='/orders')
 
@@ -40,7 +41,9 @@ class OrdersView(MethodView):
             address=order_data.address,
             comment=order_data.comment,
         ))
+
         move_items_from_basket_to_order(order, user.basket)
+        notify_about_order(user, order)
 
         return order
 

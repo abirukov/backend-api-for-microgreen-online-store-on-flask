@@ -48,6 +48,11 @@ class UsersGetListFilter(BaseGetListFilter):
 UsersGetListFilterSchema = marshmallow_dataclass.class_schema(UsersGetListFilter)
 
 
+class UserDataWithTokenSchema(Schema):
+    user_data = fields.Nested(UserSchema())
+    access_token = fields.String()
+
+
 class UsersListResponseSchema(Schema):
     result = fields.List(fields.Nested(UserSchema()))
     pagination = fields.Nested(PaginationSchema())
