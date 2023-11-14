@@ -6,7 +6,10 @@ repos:
     hooks:
     - id: flake8
       name: flake8
+      exclude: 'node_modules|env|venv|tests|migrations'
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: 'v1.3.0'
     hooks:
     - id: mypy
+      exclude: 'node_modules|env|venv|tests|migrations'
+      additional_dependencies: ["types-requests==2.31.0.1"]
