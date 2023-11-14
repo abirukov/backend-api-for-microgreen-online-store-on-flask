@@ -6,7 +6,12 @@ from beaver_app.blueprints.models import BaseModel
 from beaver_app.config import get_connection_dsn, get_config
 
 db = SQLAlchemy()
-engine = create_engine(get_connection_dsn(get_config()), echo=True, query_cache_size=0)
+engine = create_engine(
+    get_connection_dsn(get_config()),
+    echo=True,
+    query_cache_size=0,
+    pool_size=100,
+)
 db_session = scoped_session(sessionmaker(engine))
 
 Base = declarative_base(cls=BaseModel)
